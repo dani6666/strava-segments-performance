@@ -1,0 +1,6 @@
+@strava_segments_performance_backend_HostAddress = http://localhost:5252
+
+GET {{strava_segments_performance_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
