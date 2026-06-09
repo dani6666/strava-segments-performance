@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: strava_segments
+      POSTGRES_USER: strava_user
+      POSTGRES_PASSWORD: strava_local_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U strava_user -d strava_segments"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./strava-segments-performance-backend
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5000
+      ConnectionStrings__DefaultConnection: >-
+        Host=postgres;Port=5432;Database=strava_segments;
+        Username=strava_user;Password=strava_local_password
+      Strava__ClientId: "${STRAVA_CLIENT_ID}"
+      Strava__ClientSecret: "${STRAVA_CLIENT_SECRET}"
+      Strava__CallbackUrl: "http://localhost:4200/auth/callback"
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./strava-segments-performance
+      dockerfile: Dockerfile
+    environment:
+      BACKEND_ORIGIN: "http://backend:5000"
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
