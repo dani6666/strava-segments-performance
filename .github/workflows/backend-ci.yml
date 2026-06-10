@@ -46,8 +46,9 @@ jobs:
       - name: Install Railway CLI
         if: github.ref == 'refs/heads/master'
         run: npm i -g @railway/cli
-
-      - name: Check Railway authentication
+    
+      - name: Update image variable and redeploy backend
+        if: github.ref == 'refs/heads/master'
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
@@ -57,17 +58,7 @@ jobs:
             --environment $RAILWAY_ENVIRONMENT_ID \
             --service backend \
             --set "RAILWAY_DOCKER_IMAGE=${{ env.DOCKER_IMAGE }}:${{ github.sha }}"
-          railway whoami --project $RAILWAY_PROJECT_ID \
+          railway redeploy --project $RAILWAY_PROJECT_ID \
             --environment $RAILWAY_ENVIRONMENT_ID \
-            --service backend
-    
-      - name: Update image variable and redeploy backend
-        if: github.ref == 'refs/heads/master'
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-          RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
-        run: |
-          railway variables --service backend --set \
-            "RAILWAY_DOCKER_IMAGE=${{ env.DOCKER_IMAGE }}:${{ github.sha }}"
-          railway redeploy --service backend --yes
+            --service backend \
+            --set "RAILWAY_DOCKER_IMAGE=${{ env.DOCKER_IMAGE }}:${{ github.sha }}"
