@@ -11,7 +11,7 @@ RUN npm run build -- --configuration production
 
 FROM nginx:1.27-alpine AS runtime
 
-ENV BACKEND_ORIGIN=http://localhost:8080
+ENV BACKEND_ORIGIN=https://backend-production-d2a6.up.railway.app
 
 RUN rm /etc/nginx/conf.d/default.conf
 
