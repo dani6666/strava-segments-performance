@@ -57,7 +57,7 @@ jobs:
           railway variables --project $RAILWAY_PROJECT_ID \
             --environment $RAILWAY_ENVIRONMENT_ID \
             --service backend \
-            --set "RAILWAY_DOCKER_IMAGE=${{ env.DOCKER_IMAGE }}:${{ github.sha }}"
+            --set "RAILWAY_DOCKER_IMAGE=${{ env.DOCKER_IMAGE }}:${{ github.sha }}" --yes
           railway redeploy --project $RAILWAY_PROJECT_ID \
             --environment $RAILWAY_ENVIRONMENT_ID \
-            --service backend
+            --service backend --yes
