@@ -57,7 +57,9 @@ jobs:
             --environment $RAILWAY_ENVIRONMENT_ID \
             --service backend \
             --set "RAILWAY_DOCKER_IMAGE=${{ env.DOCKER_IMAGE }}:${{ github.sha }}"
-          railway whoami
+          railway whoami --project $RAILWAY_PROJECT_ID \
+            --environment $RAILWAY_ENVIRONMENT_ID \
+            --service backend
     
       - name: Update image variable and redeploy backend
         if: github.ref == 'refs/heads/master'
