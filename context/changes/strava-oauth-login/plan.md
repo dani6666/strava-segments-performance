@@ -429,17 +429,17 @@ End-to-end verification of the full OAuth flow through Docker Compose. Fix any i
 
 #### Automated
 
-- [x] 2.1 Project builds cleanly: `dotnet build`
-- [x] 2.2 `GET /auth/login` returns 302 to Strava with correct params
-- [x] 2.3 `GET /api/auth/me` returns 401 when unauthenticated
-- [x] 2.4 `POST /api/auth/logout` returns 200
+- [x] 2.1 Project builds cleanly: `dotnet build` — 1dfa5ab
+- [x] 2.2 `GET /auth/login` returns 302 to Strava with correct params — 1dfa5ab
+- [x] 2.3 `GET /api/auth/me` returns 401 when unauthenticated — 1dfa5ab
+- [x] 2.4 `POST /api/auth/logout` returns 200 — 1dfa5ab
 
 #### Manual
 
-- [x] 2.5 `/auth/login` redirects to Strava authorization page
-- [x] 2.6 After Strava auth, cookie is set and `/api/auth/me` returns user data
-- [x] 2.7 User row exists in PostgreSQL with tokens
-- [x] 2.8 Logout clears session
+- [x] 2.5 `/auth/login` redirects to Strava authorization page — 1dfa5ab
+- [x] 2.6 After Strava auth, cookie is set and `/api/auth/me` returns user data — 1dfa5ab
+- [x] 2.7 User row exists in PostgreSQL with tokens — 1dfa5ab
+- [x] 2.8 Logout clears session — 1dfa5ab
 
 ### Phase 3: Frontend Auth Flow
 
