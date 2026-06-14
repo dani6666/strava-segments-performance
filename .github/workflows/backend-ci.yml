@@ -75,7 +75,7 @@ jobs:
           STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
           STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
           TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
-          CONNECTION_STRING: 'Host=strava-db.railway.internal;Port=5432;Database=strava_segments;Username=${{strava-db.POSTGRES_USER}};Password=${{strava-db.POSTGRES_PASSWORD}}'
+          CONNECTION_STRING: "Host=strava-db.railway.internal;Port=5432;Database=strava_segments;Username=${{ '${{' }}strava-db.POSTGRES_USER}};Password=${{ '${{' }}strava-db.POSTGRES_PASSWORD}}"
         run: |
           railway variables set Strava__ClientId="$STRAVA_CLIENT_ID" \
             Strava__ClientSecret="$STRAVA_CLIENT_SECRET" \
