@@ -1,5 +1,10 @@
 # CLAUDE.md
 
+## Rules
+
+1. Do not include yourself in commits
+2. In commit message just name the feature being implemented instead of listing code changes
+
 ## Project Overview
 
 **Strava Segments Performance** — a web app that scores a cyclist's fitness (0–100) per workout by comparing segment elapsed time + heart rate against personal history on those same segments. Same time at lower HR = fitness gain.
@@ -20,7 +25,7 @@ The fitness score is self-relative (0 = user's personal worst, 100 = personal be
 
 ### Backend
 - Entry point: `strava-segments-performance-backend/Program.cs` — minimal API wiring only (no controllers)
-- Namespace: `strava_segments_performance_backend`
+- Namespace: `StravaSegmentsPerformanceBackend`
 - Nullable and implicit usings enabled; target framework `net10.0`
 - Background jobs for Strava data fetching use .NET hosted services (`IHostedService`)
 - Strava OAuth handled via ASP.NET Core OAuth middleware

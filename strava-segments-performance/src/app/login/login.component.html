@@ -1,0 +1,10 @@
+<main class="login-page">
+  <h1>Strava Segments Performance</h1>
+  <p>Track your cycling fitness by comparing segment times and heart rate against your personal history.</p>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <button (click)="connect()">Connect with Strava</button>
+</main>
