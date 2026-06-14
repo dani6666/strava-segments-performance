@@ -417,29 +417,29 @@ End-to-end verification of the full OAuth flow through Docker Compose. Fix any i
 
 #### Automated
 
-- [ ] 1.1 Project builds cleanly: `dotnet build`
-- [ ] 1.2 Migration files generated in `Migrations/` directory
-- [ ] 1.3 Database created: `dotnet ef database update` succeeds
+- [x] 1.1 Project builds cleanly: `dotnet build`
+- [x] 1.2 Migration files generated in `Migrations/` directory
+- [x] 1.3 Database created: `dotnet ef database update` succeeds
 
 #### Manual
 
-- [ ] 1.4 `Users` table exists in PostgreSQL with correct columns and index
+- [x] 1.4 `Users` table exists in PostgreSQL with correct columns and index
 
 ### Phase 2: Backend OAuth Pipeline
 
 #### Automated
 
-- [ ] 2.1 Project builds cleanly: `dotnet build`
-- [ ] 2.2 `GET /auth/login` returns 302 to Strava with correct params
-- [ ] 2.3 `GET /api/auth/me` returns 401 when unauthenticated
-- [ ] 2.4 `POST /api/auth/logout` returns 200
+- [x] 2.1 Project builds cleanly: `dotnet build`
+- [x] 2.2 `GET /auth/login` returns 302 to Strava with correct params
+- [x] 2.3 `GET /api/auth/me` returns 401 when unauthenticated
+- [x] 2.4 `POST /api/auth/logout` returns 200
 
 #### Manual
 
-- [ ] 2.5 `/auth/login` redirects to Strava authorization page
-- [ ] 2.6 After Strava auth, cookie is set and `/api/auth/me` returns user data
-- [ ] 2.7 User row exists in PostgreSQL with tokens
-- [ ] 2.8 Logout clears session
+- [x] 2.5 `/auth/login` redirects to Strava authorization page
+- [x] 2.6 After Strava auth, cookie is set and `/api/auth/me` returns user data
+- [x] 2.7 User row exists in PostgreSQL with tokens
+- [x] 2.8 Logout clears session
 
 ### Phase 3: Frontend Auth Flow
 
