@@ -1,5 +1,4 @@
 .github/*
 !.github/workflows
 .claude
-.env.local
-.env
+.env*

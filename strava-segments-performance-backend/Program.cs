@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using StravaSegmentsPerformanceBackend.Data;
 using StravaSegmentsPerformanceBackend.Models;
+using StravaSegmentsPerformanceBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,10 +60,11 @@ builder.Services
         options.Events.OnCreatingTicket = async context =>
         {
             var db = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+            var encryption = context.HttpContext.RequestServices.GetRequiredService<TokenEncryptionService>();
             var stravaId = long.Parse(context.Identity!.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var displayName = context.Identity.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
-            var accessToken = context.AccessToken!;
-            var refreshToken = context.RefreshToken!;
+            var accessToken = encryption.Encrypt(context.AccessToken!);
+            var refreshToken = encryption.Encrypt(context.RefreshToken!);
             var expiresAt = context.ExpiresIn.HasValue
                 ? DateTime.UtcNow.AddSeconds(context.ExpiresIn.Value.TotalSeconds)
                 : DateTime.UtcNow.AddHours(6);
@@ -90,6 +92,7 @@ builder.Services
         };
     });
 
+builder.Services.AddSingleton<TokenEncryptionService>();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

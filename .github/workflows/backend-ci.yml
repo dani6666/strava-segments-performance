@@ -57,9 +57,11 @@ jobs:
           RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
           STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
           STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
+          TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
         run: |
           railway variables set Strava__ClientId="$STRAVA_CLIENT_ID" \
             Strava__ClientSecret="$STRAVA_CLIENT_SECRET" \
+            TokenEncryption__Key="$TOKEN_ENCRYPTION_KEY" \
             --project $RAILWAY_PROJECT_ID \
             --environment $RAILWAY_ENVIRONMENT_ID \
             --service backend

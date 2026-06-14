@@ -28,9 +28,15 @@ export class AuthService {
   logout() {
     this.http
       .post(`${environment.apiBaseUrl}/api/auth/logout`, {}, { withCredentials: true })
-      .subscribe(() => {
-        this.user.set(null);
-        this.router.navigate(['/login']);
+      .subscribe({
+        next: () => {
+          this.user.set(null);
+          this.router.navigate(['/login']);
+        },
+        error: () => {
+          this.user.set(null);
+          this.router.navigate(['/login']);
+        }
       });
   }
 }
