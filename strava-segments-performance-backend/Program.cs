@@ -1,7 +1,9 @@
+using System.Net;
 using System.Security.Claims;
 using AspNet.Security.OAuth.Strava;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using StravaSegmentsPerformanceBackend.Data;
 using StravaSegmentsPerformanceBackend.Models;
@@ -95,7 +97,16 @@ builder.Services
 builder.Services.AddSingleton<TokenEncryptionService>();
 builder.Services.AddAuthorization();
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 using (var scope = app.Services.CreateScope())
 {
