@@ -2,11 +2,13 @@ version: "3.9"
 
 services:
   postgres:
-    image: postgres:16-alpine
+    build:
+      context: ./db
+      dockerfile: Dockerfile
     environment:
       POSTGRES_DB: strava_segments
-      POSTGRES_USER: strava_user
-      POSTGRES_PASSWORD: strava_local_password
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -26,12 +28,11 @@ services:
       ASPNETCORE_URLS: http://+:5000
       ConnectionStrings__DefaultConnection: >-
         Host=postgres;Port=5432;Database=strava_segments;
-        Username=strava_user;Password=strava_local_password
+        Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       Strava__ClientId: "${STRAVA_CLIENT_ID}"
       Strava__ClientSecret: "${STRAVA_CLIENT_SECRET}"
       # Strava authorization callback domain must be set to "localhost" in Strava API settings
       TokenEncryption__Key: "${TOKEN_ENCRYPTION_KEY}"
-      Frontend__Origin: "http://localhost:4200"
       # Note: set "Authorization Callback Domain" to "localhost" in Strava API settings (developers.strava.com)
     ports:
       - "5000:5000"
