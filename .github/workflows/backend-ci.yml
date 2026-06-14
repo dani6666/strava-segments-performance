@@ -49,6 +49,21 @@ jobs:
         if: github.ref == 'refs/heads/master'
         run: npm i -g @railway/cli
     
+      - name: Set Railway variables
+        if: github.ref == 'refs/heads/master'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+          STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
+          STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
+        run: |
+          railway variables set Strava__ClientId="$STRAVA_CLIENT_ID" \
+            Strava__ClientSecret="$STRAVA_CLIENT_SECRET" \
+            --project $RAILWAY_PROJECT_ID \
+            --environment $RAILWAY_ENVIRONMENT_ID \
+            --service backend
+
       - name: Redeploy backend
         if: github.ref == 'refs/heads/master'
         env:
