@@ -1,5 +1,10 @@
 # CLAUDE.md
 
+## Rules
+
+1. Do not include yourself in commits
+2. In commit message just name the feature being implemented instead of listing code changes
+
 ## Project Overview
 
 **Strava Segments Performance** — a web app that scores a cyclist's fitness (0–100) per workout by comparing segment elapsed time + heart rate against personal history on those same segments. Same time at lower HR = fitness gain.

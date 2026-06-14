@@ -1,0 +1,10 @@
+<main class="dashboard">
+  <header>
+    <h1>Welcome, {{ authService.user()?.displayName }}</h1>
+    <button (click)="authService.logout()">Logout</button>
+  </header>
+
+  <section class="empty-state">
+    <p>No workouts analyzed yet — this is where your fitness trends will appear.</p>
+  </section>
+</main>

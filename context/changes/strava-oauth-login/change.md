@@ -1,7 +1,7 @@
 ---
 change_id: strava-oauth-login
 title: Strava OAuth login flow (S-01 — roadmap status: ready)
-status: implementing
+status: implemented
 created: 2026-06-13
 updated: 2026-06-14
 archived_at: null

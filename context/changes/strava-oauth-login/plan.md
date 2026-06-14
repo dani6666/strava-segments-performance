@@ -445,28 +445,28 @@ End-to-end verification of the full OAuth flow through Docker Compose. Fix any i
 
 #### Automated
 
-- [ ] 3.1 Frontend builds cleanly: `npm run build`
-- [ ] 3.2 TypeScript strict mode passes
+- [x] 3.1 Frontend builds cleanly: `npm run build`
+- [x] 3.2 TypeScript strict mode passes
 
 #### Manual
 
-- [ ] 3.3 Unauthenticated visit redirects to `/login`
-- [ ] 3.4 Login page shows "Connect with Strava" button
-- [ ] 3.5 Full auth flow lands on `/dashboard` with user name
-- [ ] 3.6 Logout works and redirects to `/login`
-- [ ] 3.7 Error query param displays message on login page
+- [x] 3.3 Unauthenticated visit redirects to `/login`
+- [x] 3.4 Login page shows "Connect with Strava" button
+- [x] 3.5 Full auth flow lands on `/dashboard` with user name
+- [x] 3.6 Logout works and redirects to `/login`
+- [x] 3.7 Error query param displays message on login page
 
 ### Phase 4: Integration & Verification
 
 #### Automated
 
-- [ ] 4.1 `docker compose build` succeeds
-- [ ] 4.2 `docker compose up` starts without errors
-- [ ] 4.3 Health check passes: `curl http://localhost:5000/health`
+- [x] 4.1 `docker compose build` succeeds
+- [x] 4.2 `docker compose up` starts without errors
+- [x] 4.3 Health check passes: `curl http://localhost:5000/health`
 
 #### Manual
 
-- [ ] 4.4 Full Docker flow: login → dashboard → logout
-- [ ] 4.5 Strava deny → error message on login page
-- [ ] 4.6 Page refresh preserves session
-- [ ] 4.7 Backend restart preserves session (tokens in DB)
+- [x] 4.4 Full Docker flow: login → dashboard → logout
+- [x] 4.5 Strava deny → error message on login page
+- [x] 4.6 Page refresh preserves session
+- [x] 4.7 Backend restart preserves session (tokens in DB)

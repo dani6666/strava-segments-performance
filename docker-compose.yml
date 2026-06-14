@@ -31,6 +31,7 @@ services:
       Strava__ClientSecret: "${STRAVA_CLIENT_SECRET}"
       # Strava authorization callback domain must be set to "localhost" in Strava API settings
       Frontend__Origin: "http://localhost:4200"
+      # Note: set "Authorization Callback Domain" to "localhost" in Strava API settings (developers.strava.com)
     ports:
       - "5000:5000"
     depends_on:
