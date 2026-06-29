@@ -27,8 +27,8 @@ Cyclists who repeat the same Strava segments cannot tell whether their fitness i
 
 | ID   | Change ID            | Outcome (user can ...)                                        | Prerequisites | PRD refs            | Status   |
 | ---- | -------------------- | ------------------------------------------------------------- | ------------- | ------------------- | -------- |
-| S-01 | strava-oauth-login   | authenticate via Strava OAuth and land on an authenticated UI | —             | FR-001              | ready    |
-| S-02 | workout-data-fetch   | trigger workout fetching from Strava with progress indication | S-01          | FR-003              | proposed |
+| S-01 | strava-oauth-login   | authenticate via Strava OAuth and land on an authenticated UI | —             | FR-001              | done     |
+| S-02 | workout-data-fetch   | trigger workout fetching from Strava with progress indication | S-01          | FR-003              | ready    |
 | S-03 | fitness-trend-chart  | see a fitness trend chart (0-100 score over time)             | S-02          | FR-003, FR-004, US-01 | proposed |
 | S-04 | timeframe-selection  | filter analysis by a selected timeframe                       | S-03          | FR-002              | proposed |
 
@@ -61,7 +61,7 @@ None. All technical elements are introduced in the vertical slices that first ne
 - **Unknowns:**
   - Is the Strava API application already registered (client ID + secret available)? — Owner: user. Block: no.
 - **Risk:** Strava OAuth is the external dependency gate; if API access is denied or delayed, every downstream slice is blocked. Sequenced first to surface this risk as early as possible.
-- **Status:** ready
+- **Status:** done
 
 ### S-02: Workout data fetching with progress and caching
 
@@ -104,7 +104,7 @@ None. All technical elements are introduced in the vertical slices that first ne
 
 | Roadmap ID | Change ID           | Suggested issue title                              | Ready for `/10x-plan` | Notes                          |
 | ---------- | ------------------- | -------------------------------------------------- | --------------------- | ------------------------------ |
-| S-01       | strava-oauth-login  | Implement Strava OAuth login flow                  | yes                   | Run `/10x-plan strava-oauth-login` |
+| S-01       | strava-oauth-login  | Implement Strava OAuth login flow                  | done                  | Completed 2026-06-30               |
 | S-02       | workout-data-fetch  | Fetch and cache workout data from Strava           | no                    | Blocked by S-01                |
 | S-03       | fitness-trend-chart | Score workouts and display fitness trend chart      | no                    | Blocked by S-02                |
 | S-04       | timeframe-selection | Add timeframe filter for analysis                  | no                    | Nice-to-have; blocked by S-03  |
