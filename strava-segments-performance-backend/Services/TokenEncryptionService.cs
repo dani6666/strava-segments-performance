@@ -10,7 +10,6 @@ public class TokenEncryptionService
     {
         var keyBase64 = configuration["TokenEncryption:Key"]
             ?? throw new InvalidOperationException("TokenEncryption:Key is not configured.");
-        Console.WriteLine($"TokenEncryption:Key = {keyBase64}");
         _key = Convert.FromBase64String(keyBase64);
     }
 
