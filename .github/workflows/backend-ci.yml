@@ -65,7 +65,7 @@ jobs:
             Frontend__Origin="https://frontend-production-2e86.up.railway.app" \
             ConnectionStrings__DefaultConnection="$CONNECTION_STRING" \
             ASPNETCORE_ENVIRONMENT="Production" \
-            ASPNETCORE_URLS="http://+:5000" \
+            ASPNETCORE_URLS="http://+:8080" \
             --project $RAILWAY_PROJECT_ID \
             --environment $RAILWAY_ENVIRONMENT_ID \
             --service backend
