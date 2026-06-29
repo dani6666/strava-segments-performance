@@ -55,7 +55,7 @@ jobs:
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
           RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
         run: |
-          railway variables set BACKEND_ORIGIN="https://backend-production-d2a6.up.railway.app" \
+          railway variables set BACKEND_ORIGIN="http://backend.railway.internal:8080" \
             --project $RAILWAY_PROJECT_ID \
             --environment $RAILWAY_ENVIRONMENT_ID \
             --service frontend
