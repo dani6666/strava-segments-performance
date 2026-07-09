@@ -3,7 +3,7 @@ project: "Strava Segments Performance"
 version: 1
 status: draft
 created: 2026-06-10
-updated: 2026-06-10
+updated: 2026-07-10
 prd_version: 1
 main_goal: speed
 top_blocker: external
@@ -30,7 +30,7 @@ Cyclists who repeat the same Strava segments cannot tell whether their fitness i
 | S-01 | strava-oauth-login   | authenticate via Strava OAuth and land on an authenticated UI | —             | FR-001              | done     |
 | S-02 | workout-data-fetch   | trigger workout fetching from Strava with progress indication | S-01          | FR-003              | ready    |
 | S-03 | fitness-trend-chart  | see a fitness trend chart (0-100 score over time)             | S-02          | FR-003, FR-004, US-01 | proposed |
-| S-04 | timeframe-selection  | filter analysis by a selected timeframe                       | S-03          | FR-002              | proposed |
+| S-04 | timeframe-selection  | filter analysis by a selected timeframe                       | S-02          | FR-002              | proposed |
 
 ## Baseline
 
@@ -82,7 +82,7 @@ None. All technical elements are introduced in the vertical slices that first ne
 - **Change ID:** fitness-trend-chart
 - **PRD refs:** FR-003, FR-004, US-01
 - **Prerequisites:** S-02
-- **Parallel with:** —
+- **Parallel with:** S-04
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** The scoring formula is the core intellectual risk (PRD FR-004: "formula validation is the core risk to iterate on"). If the formula produces nonsensical scores, the chart is useless — but this can only be validated with real data, so it's correctly sequenced after data fetching.
@@ -93,11 +93,11 @@ None. All technical elements are introduced in the vertical slices that first ne
 - **Outcome:** user can select a timeframe to narrow the analysis window instead of analyzing all workouts
 - **Change ID:** timeframe-selection
 - **PRD refs:** FR-002
-- **Prerequisites:** S-03
-- **Parallel with:** —
+- **Prerequisites:** S-02
+- **Parallel with:** S-03
 - **Blockers:** —
 - **Unknowns:** —
-- **Risk:** Nice-to-have (PRD priority). With speed as the sequencing goal, this is the first candidate to cut if the deadline pressures. The chart already serves as a visual timeframe — users can eyeball trends without explicit filtering.
+- **Risk:** Nice-to-have (PRD priority). With speed as the sequencing goal, this is the first candidate to cut if the deadline pressures. The chart already serves as a visual timeframe — users can eyeball trends without explicit filtering. Building alongside S-03 requires agreeing on a date-range filter contract (e.g. query params on the cached-workout data) up front so the two integrate cleanly once S-03's analysis endpoint lands.
 - **Status:** proposed
 
 ## Backlog Handoff
@@ -107,7 +107,7 @@ None. All technical elements are introduced in the vertical slices that first ne
 | S-01       | strava-oauth-login  | Implement Strava OAuth login flow                  | done                  | Completed 2026-06-30               |
 | S-02       | workout-data-fetch  | Fetch and cache workout data from Strava           | no                    | Blocked by S-01                |
 | S-03       | fitness-trend-chart | Score workouts and display fitness trend chart      | no                    | Blocked by S-02                |
-| S-04       | timeframe-selection | Add timeframe filter for analysis                  | no                    | Nice-to-have; blocked by S-03  |
+| S-04       | timeframe-selection | Add timeframe filter for analysis                  | no                    | Nice-to-have; blocked by S-02, can run parallel with S-03 |
 
 ## Open Roadmap Questions
 
