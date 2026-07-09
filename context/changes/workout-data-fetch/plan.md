@@ -398,13 +398,13 @@ Add automated coverage for the highest-risk logic (the Strava client), and run f
 
 #### Automated
 
-- [ ] 1.1 Project builds cleanly: `dotnet build`
-- [ ] 1.2 Migration file generated in `Migrations/`
-- [ ] 1.3 `dotnet ef database update` succeeds
+- [x] 1.1 Project builds cleanly: `dotnet build`
+- [x] 1.2 Migration file generated in `Migrations/`
+- [x] 1.3 `dotnet ef database update` succeeds
 
 #### Manual
 
-- [ ] 1.4 `Activities`, `SegmentEfforts`, `WorkoutFetchStatuses` tables exist with correct columns/indexes
+- [x] 1.4 `Activities`, `SegmentEfforts`, `WorkoutFetchStatuses` tables exist with correct columns/indexes
 
 ### Phase 2: Frontend Fetch UX
 

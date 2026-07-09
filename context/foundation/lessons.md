@@ -29,3 +29,10 @@
 - **Problem**: Secrets added to `appsettings.*.json` get committed to the repo. Secrets added to `docker-compose.yml` or `.env` but not to GitHub Actions workflows cause CI/CD deployments to run without them, leading to runtime crashes in production.
 - **Rule**: Never store secrets in appsettings files. Store them in `.env` (gitignored), reference via `${VAR}` in `docker-compose.yml`, and always update `.github/workflows/` to pass the secret from `${{ secrets.VAR }}` to the deployment target. Treat these three locations as a checklist: `.env` + `docker-compose.yml` + CI workflow.
 - **Applies to**: any change that introduces a new secret or sensitive configuration value
+
+## Do not apply EF Core migrations to a shared/local dev database until the user has reviewed the model changes
+
+- **Context**: `/10x-implement` phases that add or rename entity properties backed by an EF Core migration (e.g. S-02 workout-data-fetch Phase 1)
+- **Problem**: Generating a migration and immediately running `dotnet ef database update` locks in a schema before the user has had a chance to review naming/shape. If they then want a rename (e.g. `StravaEffortId` → `StravaSegmentEffortId`), the migration already applied has to be rolled back (`dotnet ef database update <previous-migration>`), the migration file removed (`dotnet ef migrations remove --force`), and a new one regenerated — extra churn that review-before-apply avoids.
+- **Rule**: After generating a migration, stop and let the user review the entity/model diff before running `dotnet ef database update`. Only apply once they explicitly confirm. This is now the default for new migrations during implementation, not just when the user asks for it once.
+- **Applies to**: any `/10x-implement` phase that generates an EF Core (or equivalent ORM) migration
