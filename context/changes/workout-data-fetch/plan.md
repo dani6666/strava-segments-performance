@@ -398,20 +398,20 @@ Add automated coverage for the highest-risk logic (the Strava client), and run f
 
 #### Automated
 
-- [x] 1.1 Project builds cleanly: `dotnet build`
-- [x] 1.2 Migration file generated in `Migrations/`
-- [x] 1.3 `dotnet ef database update` succeeds
+- [x] 1.1 Project builds cleanly: `dotnet build` — 574b951
+- [x] 1.2 Migration file generated in `Migrations/` — 574b951
+- [x] 1.3 `dotnet ef database update` succeeds — 574b951
 
 #### Manual
 
-- [x] 1.4 `Activities`, `SegmentEfforts`, `WorkoutFetchStatuses` tables exist with correct columns/indexes
+- [x] 1.4 `Activities`, `SegmentEfforts`, `WorkoutFetchStatuses` tables exist with correct columns/indexes — 574b951
 
 ### Phase 2: Frontend Fetch UX
 
 #### Automated
 
-- [ ] 2.1 Frontend builds cleanly: `npm run build`
-- [ ] 2.2 TypeScript strict mode passes
+- [x] 2.1 Frontend builds cleanly: `npm run build`
+- [x] 2.2 TypeScript strict mode passes
 
 ### Phase 3: Background Fetch Worker & Trigger Endpoints (minimal Strava client)
 

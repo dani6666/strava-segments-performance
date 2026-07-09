@@ -4,7 +4,39 @@
     <button (click)="authService.logout()">Logout</button>
   </header>
 
-  <section class="empty-state">
-    <p>No workouts analyzed yet — this is where your fitness trends will appear.</p>
+  <section class="fetch-panel">
+    @switch (fetchService.status().status) {
+      @case ('idle') {
+        <button (click)="trigger()">Fetch my workouts</button>
+      }
+      @case ('interrupted') {
+        <button (click)="trigger()">Resume fetch</button>
+      }
+      @case ('running') {
+        <div class="fetch-progress">
+          <span class="spinner"></span>
+          @if (fetchService.status().stage === 'listing') {
+            <p>Listing your rides...</p>
+          } @else {
+            <p>
+              Fetching segment details... {{ fetchService.status().activitiesProcessed }} of
+              {{ fetchService.status().totalToProcess }}
+            </p>
+          }
+        </div>
+      }
+      @case ('completed') {
+        <div class="fetch-complete">
+          <p>{{ fetchService.status().activitiesProcessed }} cycling activities cached</p>
+          <button (click)="trigger()">Check for new rides</button>
+        </div>
+      }
+      @case ('failed') {
+        <div class="fetch-error">
+          <p>{{ fetchService.status().errorMessage }}</p>
+          <button (click)="trigger()">Retry</button>
+        </div>
+      }
+    }
   </section>
 </main>
