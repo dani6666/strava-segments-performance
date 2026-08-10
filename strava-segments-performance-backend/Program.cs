@@ -101,6 +101,9 @@ builder.Services.AddHttpClient<StravaApiClient>();
 builder.Services.AddSingleton<WorkoutFetchChannel>();
 builder.Services.AddHostedService<WorkoutFetchWorker>();
 
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddScoped<StravaTokenService>();
+
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;

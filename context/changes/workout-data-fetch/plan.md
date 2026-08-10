@@ -417,27 +417,27 @@ Add automated coverage for the highest-risk logic (the Strava client), and run f
 
 #### Automated
 
-- [x] 3.1 Project builds cleanly: `dotnet build`
+- [x] 3.1 Project builds cleanly: `dotnet build` — aa5c140
 
 #### Manual
 
-- [x] 3.2 `POST /api/workouts/fetch` returns 401 when unauthenticated (curl)
-- [x] 3.3 `GET /api/workouts/fetch-status` returns 401 when unauthenticated (curl)
-- [x] 3.4 Trigger via the Phase 2 UI shows live staged progress end-to-end for the first time
-- [x] 3.5 `Activities`/`SegmentEfforts` rows appear in PostgreSQL
-- [x] 3.6 Re-triggering while running does not create a duplicate job
-- [x] 3.7 Restart mid-fetch → status becomes Interrupted in the UI → re-trigger resumes without re-fetching cached details
+- [x] 3.2 `POST /api/workouts/fetch` returns 401 when unauthenticated (curl) — aa5c140
+- [x] 3.3 `GET /api/workouts/fetch-status` returns 401 when unauthenticated (curl) — aa5c140
+- [x] 3.4 Trigger via the Phase 2 UI shows live staged progress end-to-end for the first time — aa5c140
+- [x] 3.5 `Activities`/`SegmentEfforts` rows appear in PostgreSQL — aa5c140
+- [x] 3.6 Re-triggering while running does not create a duplicate job — aa5c140
+- [x] 3.7 Restart mid-fetch → status becomes Interrupted in the UI → re-trigger resumes without re-fetching cached details — aa5c140
 
 ### Phase 4: Strava Reliability Hardening — Token Refresh & Rate-Limit Backoff
 
 #### Automated
 
-- [ ] 4.1 Project builds cleanly: `dotnet build`
+- [x] 4.1 Project builds cleanly: `dotnet build`
 
 #### Manual
 
-- [ ] 4.2 Happy-path fetch still works with no regression
-- [ ] 4.3 Forcing an expired token still completes the fetch (refresh works)
+- [x] 4.2 Happy-path fetch still works with no regression
+- [x] 4.3 Forcing an expired token still completes the fetch (refresh works)
 
 ### Phase 5: Testing & Integration Verification
 
