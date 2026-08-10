@@ -3,6 +3,7 @@ namespace StravaSegmentsPerformanceBackend.Models;
 public enum FetchStatusState
 {
     Idle,
+    Pending,
     Running,
     Completed,
     Failed,

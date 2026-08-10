@@ -97,6 +97,10 @@ builder.Services
 builder.Services.AddSingleton<TokenEncryptionService>();
 builder.Services.AddAuthorization();
 
+builder.Services.AddHttpClient<StravaApiClient>();
+builder.Services.AddSingleton<WorkoutFetchChannel>();
+builder.Services.AddHostedService<WorkoutFetchWorker>();
+
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
@@ -112,6 +116,10 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.MigrateAsync();
+
+    await db.WorkoutFetchStatuses
+        .Where(s => s.Status == FetchStatusState.Running)
+        .ExecuteUpdateAsync(setters => setters.SetProperty(s => s.Status, FetchStatusState.Interrupted));
 }
 
 if (app.Environment.IsDevelopment())
@@ -151,5 +159,80 @@ app.MapPost("/api/auth/logout", async (HttpContext ctx) =>
     await ctx.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     return Results.Ok();
 });
+
+static object ToFetchStatusDto(WorkoutFetchStatus status) => new
+{
+    status = status.Status switch
+    {
+        FetchStatusState.Idle => "idle",
+        FetchStatusState.Pending => "pending",
+        FetchStatusState.Running => "running",
+        FetchStatusState.Completed => "completed",
+        FetchStatusState.Failed => "failed",
+        FetchStatusState.Interrupted => "interrupted",
+        _ => throw new ArgumentOutOfRangeException(nameof(status))
+    },
+    stage = status.Stage switch
+    {
+        FetchStage.ListingActivities => "listing",
+        FetchStage.FetchingDetails => "fetching_details",
+        null => null,
+        _ => throw new ArgumentOutOfRangeException(nameof(status))
+    },
+    activitiesProcessed = status.ActivitiesProcessed,
+    totalToProcess = status.TotalToProcess,
+    errorMessage = status.ErrorMessage
+};
+
+app.MapPost("/api/workouts/fetch", async (HttpContext ctx, AppDbContext db, WorkoutFetchChannel channel) =>
+{
+    var stravaId = long.Parse(ctx.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    var user = await db.Users.FirstAsync(u => u.StravaAthleteId == stravaId);
+
+    var rowsUpdated = await db.WorkoutFetchStatuses
+        .Where(s => s.UserId == user.Id && s.Status != FetchStatusState.Pending && s.Status != FetchStatusState.Running)
+        .ExecuteUpdateAsync(setters => setters
+            .SetProperty(s => s.Status, FetchStatusState.Pending)
+            .SetProperty(s => s.Stage, (FetchStage?)null)
+            .SetProperty(s => s.ActivitiesProcessed, 0)
+            .SetProperty(s => s.TotalToProcess, (int?)null)
+            .SetProperty(s => s.ErrorMessage, (string?)null)
+            .SetProperty(s => s.StartedAtUtc, DateTime.UtcNow)
+            .SetProperty(s => s.CompletedAtUtc, (DateTime?)null));
+
+    if (rowsUpdated == 0)
+    {
+        var existing = await db.WorkoutFetchStatuses.FirstOrDefaultAsync(s => s.UserId == user.Id);
+        if (existing is null)
+        {
+            db.WorkoutFetchStatuses.Add(new WorkoutFetchStatus
+            {
+                UserId = user.Id,
+                Status = FetchStatusState.Pending,
+                ActivitiesProcessed = 0,
+                StartedAtUtc = DateTime.UtcNow
+            });
+            await db.SaveChangesAsync();
+        }
+        else
+        {
+            return Results.Ok(ToFetchStatusDto(existing));
+        }
+    }
+
+    await channel.Writer.WriteAsync(user.Id);
+
+    var status = await db.WorkoutFetchStatuses.FirstAsync(s => s.UserId == user.Id);
+    return Results.Accepted(value: ToFetchStatusDto(status));
+}).RequireAuthorization();
+
+app.MapGet("/api/workouts/fetch-status", async (HttpContext ctx, AppDbContext db) =>
+{
+    var stravaId = long.Parse(ctx.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    var user = await db.Users.FirstAsync(u => u.StravaAthleteId == stravaId);
+
+    var status = await db.WorkoutFetchStatuses.FirstOrDefaultAsync(s => s.UserId == user.Id);
+    return Results.Ok(ToFetchStatusDto(status ?? new WorkoutFetchStatus { Status = FetchStatusState.Idle }));
+}).RequireAuthorization();
 
 app.Run();

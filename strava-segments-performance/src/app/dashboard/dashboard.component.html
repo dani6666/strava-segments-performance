@@ -12,6 +12,12 @@
       @case ('interrupted') {
         <button (click)="trigger()">Resume fetch</button>
       }
+      @case ('pending') {
+        <div class="fetch-progress">
+          <span class="spinner"></span>
+          <p>Waiting to start...</p>
+        </div>
+      }
       @case ('running') {
         <div class="fetch-progress">
           <span class="spinner"></span>

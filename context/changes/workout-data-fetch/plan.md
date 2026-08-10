@@ -410,23 +410,23 @@ Add automated coverage for the highest-risk logic (the Strava client), and run f
 
 #### Automated
 
-- [x] 2.1 Frontend builds cleanly: `npm run build`
-- [x] 2.2 TypeScript strict mode passes
+- [x] 2.1 Frontend builds cleanly: `npm run build` — caacd6e
+- [x] 2.2 TypeScript strict mode passes — caacd6e
 
 ### Phase 3: Background Fetch Worker & Trigger Endpoints (minimal Strava client)
 
 #### Automated
 
-- [ ] 3.1 Project builds cleanly: `dotnet build`
+- [x] 3.1 Project builds cleanly: `dotnet build`
 
 #### Manual
 
-- [ ] 3.2 `POST /api/workouts/fetch` returns 401 when unauthenticated (curl)
-- [ ] 3.3 `GET /api/workouts/fetch-status` returns 401 when unauthenticated (curl)
-- [ ] 3.4 Trigger via the Phase 2 UI shows live staged progress end-to-end for the first time
-- [ ] 3.5 `Activities`/`SegmentEfforts` rows appear in PostgreSQL
-- [ ] 3.6 Re-triggering while running does not create a duplicate job
-- [ ] 3.7 Restart mid-fetch → status becomes Interrupted in the UI → re-trigger resumes without re-fetching cached details
+- [x] 3.2 `POST /api/workouts/fetch` returns 401 when unauthenticated (curl)
+- [x] 3.3 `GET /api/workouts/fetch-status` returns 401 when unauthenticated (curl)
+- [x] 3.4 Trigger via the Phase 2 UI shows live staged progress end-to-end for the first time
+- [x] 3.5 `Activities`/`SegmentEfforts` rows appear in PostgreSQL
+- [x] 3.6 Re-triggering while running does not create a duplicate job
+- [x] 3.7 Restart mid-fetch → status becomes Interrupted in the UI → re-trigger resumes without re-fetching cached details
 
 ### Phase 4: Strava Reliability Hardening — Token Refresh & Rate-Limit Backoff
 

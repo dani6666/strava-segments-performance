@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { interval, switchMap, takeWhile, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-export type FetchStatusValue = 'idle' | 'running' | 'completed' | 'failed' | 'interrupted';
+export type FetchStatusValue = 'idle' | 'pending' | 'running' | 'completed' | 'failed' | 'interrupted';
 export type FetchStage = 'listing' | 'fetching_details' | null;
 
 export interface WorkoutFetchStatus {
@@ -41,7 +41,7 @@ export class WorkoutFetchService {
       .pipe(
         tap(status => {
           this.status.set(status);
-          if (status.status === 'running') {
+          if (status.status === 'pending' || status.status === 'running') {
             this.startPolling();
           }
         })
@@ -58,7 +58,7 @@ export class WorkoutFetchService {
           })
         ),
         tap(status => this.status.set(status)),
-        takeWhile(status => status.status === 'running', true)
+        takeWhile(status => status.status === 'pending' || status.status === 'running', true)
       )
       .subscribe();
   }

@@ -46,6 +46,7 @@ services:
       dockerfile: Dockerfile
     environment:
       BACKEND_ORIGIN: "http://backend:5000"
+      FORWARDED_PROTO: "http"
     ports:
       - "4200:80"
     depends_on:
