@@ -443,11 +443,11 @@ Add automated coverage for the highest-risk logic (the Strava client), and run f
 
 #### Automated
 
-- [x] 5.1 Test project builds: `dotnet build`
-- [x] 5.2 All tests pass: `dotnet test`
+- [x] 5.1 Test project builds: `dotnet build` — f5ac660
+- [x] 5.2 All tests pass: `dotnet test` — f5ac660
 
 #### Manual
 
-- [x] 5.3 Full Docker flow: login → trigger → progress → cached data in Postgres
-- [x] 5.4 `docker compose restart backend` mid-fetch → UI shows interrupted → resume works
-- [x] 5.5 Re-trigger after completion with no new activities completes quickly, zero new rows
+- [x] 5.3 Full Docker flow: login → trigger → progress → cached data in Postgres — f5ac660
+- [x] 5.4 `docker compose restart backend` mid-fetch → UI shows interrupted → resume works — f5ac660
+- [x] 5.5 Re-trigger after completion with no new activities completes quickly, zero new rows — f5ac660
