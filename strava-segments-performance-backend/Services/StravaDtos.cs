@@ -47,6 +47,9 @@ public static class StravaMappingExtensions
         "Velomobile"
     };
 
+    public static bool IsRelevantCyclingActivity(this StravaActivitySummary summary) =>
+        CyclingSportTypes.Contains(summary.SportType) && summary.HasHeartrate;
+
     public static Activity ToActivity(this StravaActivitySummary summary, int userId) => new()
     {
         UserId = userId,

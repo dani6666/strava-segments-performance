@@ -102,7 +102,7 @@ builder.Services.AddSingleton<WorkoutFetchChannel>();
 builder.Services.AddHostedService<WorkoutFetchWorker>();
 
 builder.Services.AddSingleton(TimeProvider.System);
-builder.Services.AddScoped<StravaTokenService>();
+builder.Services.AddScoped<IStravaTokenService, StravaTokenService>();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {

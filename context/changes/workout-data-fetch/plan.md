@@ -432,22 +432,22 @@ Add automated coverage for the highest-risk logic (the Strava client), and run f
 
 #### Automated
 
-- [x] 4.1 Project builds cleanly: `dotnet build`
+- [x] 4.1 Project builds cleanly: `dotnet build` — 2b4477a
 
 #### Manual
 
-- [x] 4.2 Happy-path fetch still works with no regression
-- [x] 4.3 Forcing an expired token still completes the fetch (refresh works)
+- [x] 4.2 Happy-path fetch still works with no regression — 2b4477a
+- [x] 4.3 Forcing an expired token still completes the fetch (refresh works) — 2b4477a
 
 ### Phase 5: Testing & Integration Verification
 
 #### Automated
 
-- [ ] 5.1 Test project builds: `dotnet build`
-- [ ] 5.2 All tests pass: `dotnet test`
+- [x] 5.1 Test project builds: `dotnet build`
+- [x] 5.2 All tests pass: `dotnet test`
 
 #### Manual
 
-- [ ] 5.3 Full Docker flow: login → trigger → progress → cached data in Postgres
-- [ ] 5.4 `docker compose restart backend` mid-fetch → UI shows interrupted → resume works
-- [ ] 5.5 Re-trigger after completion with no new activities completes quickly, zero new rows
+- [x] 5.3 Full Docker flow: login → trigger → progress → cached data in Postgres
+- [x] 5.4 `docker compose restart backend` mid-fetch → UI shows interrupted → resume works
+- [x] 5.5 Re-trigger after completion with no new activities completes quickly, zero new rows

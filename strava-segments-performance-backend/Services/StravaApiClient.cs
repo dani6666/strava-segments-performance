@@ -10,10 +10,10 @@ public class StravaApiClient
     private static readonly TimeSpan DefaultRateLimitWait = TimeSpan.FromMinutes(15);
 
     private readonly HttpClient _httpClient;
-    private readonly StravaTokenService _tokenService;
+    private readonly IStravaTokenService _tokenService;
     private readonly TimeProvider _timeProvider;
 
-    public StravaApiClient(HttpClient httpClient, StravaTokenService tokenService, TimeProvider timeProvider)
+    public StravaApiClient(HttpClient httpClient, IStravaTokenService tokenService, TimeProvider timeProvider)
     {
         _httpClient = httpClient;
         _httpClient.BaseAddress = new Uri("https://www.strava.com/api/v3/");

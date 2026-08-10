@@ -64,9 +64,7 @@ public class WorkoutFetchWorker : BackgroundService
 
             foreach (var summary in summaries)
             {
-                if (!StravaMappingExtensions.CyclingSportTypes.Contains(summary.SportType))
-                    continue;
-                if (!summary.HasHeartrate)
+                if (!summary.IsRelevantCyclingActivity())
                     continue;
                 if (existingActivityIds.Contains(summary.Id))
                     continue;

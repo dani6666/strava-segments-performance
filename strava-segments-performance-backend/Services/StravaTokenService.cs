@@ -10,7 +10,13 @@ public record StravaTokenRefreshResponse(
     [property: JsonPropertyName("refresh_token")] string RefreshToken,
     [property: JsonPropertyName("expires_at")] long ExpiresAt);
 
-public class StravaTokenService
+public interface IStravaTokenService
+{
+    Task<string> GetValidAccessTokenAsync(User user, CancellationToken ct);
+    Task<string> ForceRefreshAsync(User user, CancellationToken ct);
+}
+
+public class StravaTokenService : IStravaTokenService
 {
     private static readonly TimeSpan RefreshBuffer = TimeSpan.FromMinutes(5);
     private const string TokenEndpoint = "https://www.strava.com/oauth/token";
