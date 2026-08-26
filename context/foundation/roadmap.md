@@ -3,7 +3,7 @@ project: "Strava Segments Performance"
 version: 1
 status: draft
 created: 2026-06-10
-updated: 2026-07-10
+updated: 2026-08-26
 prd_version: 1
 main_goal: speed
 top_blocker: external
@@ -28,7 +28,7 @@ Cyclists who repeat the same Strava segments cannot tell whether their fitness i
 | ID   | Change ID            | Outcome (user can ...)                                        | Prerequisites | PRD refs            | Status   |
 | ---- | -------------------- | ------------------------------------------------------------- | ------------- | ------------------- | -------- |
 | S-01 | strava-oauth-login   | authenticate via Strava OAuth and land on an authenticated UI | —             | FR-001              | done     |
-| S-02 | workout-data-fetch   | trigger workout fetching from Strava with progress indication | S-01          | FR-003              | ready    |
+| S-02 | workout-data-fetch   | trigger workout fetching from Strava with progress indication | S-01          | FR-003              | done     |
 | S-03 | fitness-trend-chart  | see a fitness trend chart (0-100 score over time)             | S-02          | FR-003, FR-004, US-01 | proposed |
 | S-04 | timeframe-selection  | filter analysis by a selected timeframe                       | S-02          | FR-002              | proposed |
 
@@ -74,7 +74,7 @@ None. All technical elements are introduced in the vertical slices that first ne
 - **Unknowns:**
   - Strava API rate limits for bulk historical activity + segment effort fetching — what's the practical ceiling per 15-minute window? — Owner: user. Block: no.
 - **Risk:** Rate limits may throttle large historical fetches significantly; the progress UX must handle minutes-long waits gracefully. This is where the external dependency (#1 blocker) is most felt operationally.
-- **Status:** proposed
+- **Status:** done
 
 ### S-03: Fitness scoring and trend chart
 
@@ -121,4 +121,6 @@ None carried from PRD. The primary external risk (Strava API access and rate lim
 - **User-configurable scoring parameters** — Why parked: PRD Non-Goals. Scoring formula ships as-is; no user knobs.
 
 ## Done
+
+- **S-02: user can trigger workout fetching from Strava, see progress as data loads, and have fetched workouts cached for reuse** — Archived 2026-08-26 → `context/archive/2026-07-10-workout-data-fetch/`. Lesson: —.
 
