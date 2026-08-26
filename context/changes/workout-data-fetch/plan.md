@@ -380,6 +380,11 @@ Add automated coverage for the highest-risk logic (the Strava client), and run f
 - New tables (`Activities`, `SegmentEfforts`, `WorkoutFetchStatuses`) are additive — no changes to the existing `Users` table or migration history.
 - No backfill needed; every user starts with zero cached activities until they trigger their first fetch.
 
+## Addenda
+
+- **Added `Pending` state to `FetchStatusState` (extends Phase 1, item 3).** The enum gained a `Pending` value between `Idle` and `Running`, meaning "enqueued on the channel, worker not yet started." The trigger endpoint sets `Pending` and enqueues; `WorkoutFetchWorker` promotes `Pending → Running` when it dequeues. The single-flight guard in `POST /api/workouts/fetch` excludes both `Pending` and `Running`, and the startup reset maps both `Running` and `Pending` back to `Interrupted` (see F1) so an enqueue lost to a restart stays re-triggerable. Frontend `FetchStatusValue` and DTO mapping mirror the new state.
+- **E-bike sport types excluded from `CyclingSportTypes` (deviation from Phase 3, item 1).** The implemented set omits `EBikeRide` and `EMountainBikeRide` (6 types, not the 8 originally listed). Rationale: motor assist decouples heart rate from mechanical effort, so an e-bike segment effort would corrupt the self-relative fitness signal S-03 computes (same time at lower HR = fitness gain). E-bike rides are therefore never listed, cached, or scored. Revisit if S-03 gains an assist-aware scoring path.
+
 ## References
 
 - Roadmap slice: `context/foundation/roadmap.md` (S-02)

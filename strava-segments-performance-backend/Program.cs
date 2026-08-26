@@ -121,7 +121,7 @@ using (var scope = app.Services.CreateScope())
     await db.Database.MigrateAsync();
 
     await db.WorkoutFetchStatuses
-        .Where(s => s.Status == FetchStatusState.Running)
+        .Where(s => s.Status == FetchStatusState.Running || s.Status == FetchStatusState.Pending)
         .ExecuteUpdateAsync(setters => setters.SetProperty(s => s.Status, FetchStatusState.Interrupted));
 }
 

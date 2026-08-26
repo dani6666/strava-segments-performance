@@ -7,7 +7,8 @@ namespace StravaSegmentsPerformanceBackend.Services;
 
 public class StravaApiClient
 {
-    private static readonly TimeSpan DefaultRateLimitWait = TimeSpan.FromMinutes(15);
+    private static readonly TimeSpan DefaultRateLimitWait = TimeSpan.FromMinutes(1);
+    private static readonly TimeSpan SingleCallRetryTimeout = TimeSpan.FromHours(1);
 
     private readonly HttpClient _httpClient;
     private readonly IStravaTokenService _tokenService;
@@ -44,6 +45,7 @@ public class StravaApiClient
     {
         var accessToken = await _tokenService.GetValidAccessTokenAsync(user, ct);
         var hasRetriedAfterUnauthorized = false;
+        var retryDeadline = _timeProvider.GetUtcNow() + SingleCallRetryTimeout;
 
         while (true)
         {
@@ -64,11 +66,27 @@ public class StravaApiClient
             {
                 var wait = response.Headers.RetryAfter?.Delta ?? DefaultRateLimitWait;
                 response.Dispose();
+                if (_timeProvider.GetUtcNow() + wait > retryDeadline)
+                    throw new TimeoutException(
+                        $"Strava rate-limit retries for '{request.RequestUri}' exceeded the {SingleCallRetryTimeout.TotalHours}h limit.");
                 await Task.Delay(wait, _timeProvider, ct);
                 continue;
             }
 
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode)
+            {
+                // Dispose on the failure path; the caller owns disposal of a successful response.
+                try
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+                catch
+                {
+                    response.Dispose();
+                    throw;
+                }
+            }
+
             return response;
         }
     }

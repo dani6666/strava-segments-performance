@@ -7,6 +7,7 @@ namespace StravaSegmentsPerformanceBackend.Services;
 public class WorkoutFetchWorker : BackgroundService
 {
     private const int PageSize = 50;
+    private static readonly TimeSpan WholeFetchTimeout = TimeSpan.FromHours(3);
 
     private readonly WorkoutFetchChannel _channel;
     private readonly IServiceScopeFactory _scopeFactory;
@@ -23,9 +24,21 @@ public class WorkoutFetchWorker : BackgroundService
     {
         await foreach (var userId in _channel.Reader.ReadAllAsync(stoppingToken))
         {
+            using var opCts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+            opCts.CancelAfter(WholeFetchTimeout);
             try
             {
-                await ProcessUserAsync(userId, stoppingToken);
+                await ProcessUserAsync(userId, opCts.Token);
+            }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                // App is shutting down — leave the status for the startup reset to recover.
+                throw;
+            }
+            catch (OperationCanceledException) when (opCts.IsCancellationRequested)
+            {
+                _logger.LogError("Workout fetch for user {UserId} exceeded {Timeout} and was aborted", userId, WholeFetchTimeout);
+                await MarkFailedAsync(userId, $"Fetch exceeded the {WholeFetchTimeout.TotalHours}h limit and was aborted.", stoppingToken);
             }
             catch (Exception ex)
             {

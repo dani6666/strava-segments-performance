@@ -108,6 +108,26 @@ public class StravaApiClientTests
         Assert.Equal(handler.Requests[0].RequestUri, handler.Requests[1].RequestUri);
     }
 
+    [Fact]
+    public async Task SendAsync_WhenRateLimitWaitWouldExceedThePerCallCap_ThrowsTimeoutInsteadOfWaiting()
+    {
+        // Retry-After longer than the 1h per-call retry cap: the client must give up
+        // rather than schedule a wait that pushes past the deadline.
+        var handler = new StubHandler(_ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+            response.Headers.RetryAfter = new System.Net.Http.Headers.RetryConditionHeaderValue(TimeSpan.FromMinutes(61));
+            return response;
+        });
+        var client = new StravaApiClient(new HttpClient(handler), new FakeTokenService(), new FakeTimeProvider());
+
+        await Assert.ThrowsAsync<TimeoutException>(
+            () => client.ListActivitiesPageAsync(TestUser, page: 1, perPage: 50, CancellationToken.None));
+
+        // One attempt, then aborted — never retried past the cap.
+        Assert.Single(handler.Requests);
+    }
+
     [Theory]
     [InlineData("Ride", true, true)]
     [InlineData("MountainBikeRide", true, true)]

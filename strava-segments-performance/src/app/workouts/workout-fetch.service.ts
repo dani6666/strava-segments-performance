@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { interval, switchMap, takeWhile, tap } from 'rxjs';
+import { Subscription, interval, switchMap, takeWhile, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export type FetchStatusValue = 'idle' | 'pending' | 'running' | 'completed' | 'failed' | 'interrupted';
@@ -26,13 +26,18 @@ const IDLE_STATUS: WorkoutFetchStatus = {
 export class WorkoutFetchService {
   status = signal<WorkoutFetchStatus>(IDLE_STATUS);
 
+  private pollingSub?: Subscription;
+
   constructor(private http: HttpClient) {}
 
   trigger() {
     return this.http
       .post<WorkoutFetchStatus>(`${environment.apiBaseUrl}/api/workouts/fetch`, {}, { withCredentials: true })
       .pipe(tap(status => this.status.set(status)))
-      .subscribe(() => this.startPolling());
+      .subscribe({
+        next: () => this.startPolling(),
+        error: err => this.setFailed(err)
+      });
   }
 
   checkStatus() {
@@ -46,11 +51,16 @@ export class WorkoutFetchService {
           }
         })
       )
-      .subscribe();
+      .subscribe({ error: err => this.setFailed(err) });
   }
 
   private startPolling() {
-    interval(2000)
+    // Guard against a second concurrent poller (e.g. trigger() after a
+    // checkStatus()-initiated poll is already live).
+    if (this.pollingSub && !this.pollingSub.closed) {
+      return;
+    }
+    this.pollingSub = interval(2000)
       .pipe(
         switchMap(() =>
           this.http.get<WorkoutFetchStatus>(`${environment.apiBaseUrl}/api/workouts/fetch-status`, {
@@ -60,6 +70,14 @@ export class WorkoutFetchService {
         tap(status => this.status.set(status)),
         takeWhile(status => status.status === 'pending' || status.status === 'running', true)
       )
-      .subscribe();
+      .subscribe({ error: err => this.setFailed(err) });
+  }
+
+  private setFailed(err: unknown) {
+    this.status.update(current => ({
+      ...current,
+      status: 'failed',
+      errorMessage: err instanceof Error ? err.message : 'Fetch request failed.'
+    }));
   }
 }
