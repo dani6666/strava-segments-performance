@@ -69,6 +69,16 @@
       &:hover {
         background: #d84300;
       }
+
+      &:disabled {
+        background: #ccc !important;
+        color: #888 !important;
+        cursor: not-allowed !important;
+
+        &:hover {
+          background: #ccc !important;
+        }
+      }
     }
 
     .fetch-progress {
