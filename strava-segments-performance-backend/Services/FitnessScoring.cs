@@ -15,6 +15,11 @@ public static class FitnessScoring
     // mid-segment stop (coffee break, red light) rather than a genuine slow effort.
     private const double KStall = 2.0;
 
+    // A workout needs at least this many scored efforts (post-stall-drop, post-N>=2-segment
+    // filter) for its aggregate to be trustworthy - one or two repeated segments is too thin
+    // a sample to call a fitness trend.
+    private const int MinScoredEffortsPerWorkout = 3;
+
     public static IReadOnlyList<FitnessTrendPoint> Score(IEnumerable<SegmentEffortRecord> efforts)
     {
         var scoredEfforts = efforts
@@ -25,6 +30,7 @@ public static class FitnessScoring
 
         var workoutScores = scoredEfforts
             .GroupBy(x => x.Effort.ActivityId)
+            .Where(g => g.Count() >= MinScoredEffortsPerWorkout)
             .Select(g => new
             {
                 Date = g.First().Effort.WorkoutStartUtc,

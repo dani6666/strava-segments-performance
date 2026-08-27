@@ -72,7 +72,7 @@ A dependency-free scorer that turns a flat list of segment-effort records into a
 2. **Stall drop**: per `StravaSegmentId`, compute `medianElapsed`; drop efforts with `ElapsedTimeSeconds > K_STALL * medianElapsed` (`const double K_STALL = 2.0`).
 3. **Per-effort cost**: `C = AverageHeartRate * ElapsedTimeSeconds`.
 4. **Per-segment percentile**: group by `StravaSegmentId`; for segments with ≥2 efforts, `p_e = 100 * (count of efforts with C worse than e) / (N-1)`, average-rank on ties, best→100 worst→0. Segments with <2 efforts contribute nothing.
-5. **Per-workout aggregation**: group scored efforts by `ActivityId`; `S_w = Σ(w_s · p_e) / Σ(w_s)` where `w_s` = that segment's median elapsed time (per-segment constant, not the effort's own time). Workouts with 0 scored efforts produce no point.
+5. **Per-workout aggregation**: group scored efforts by `ActivityId`; `S_w = Σ(w_s · p_e) / Σ(w_s)` where `w_s` = that segment's median elapsed time (per-segment constant, not the effort's own time). Workouts with fewer than `MIN_SCORED_EFFORTS = 3` scored efforts produce no point (added post-implementation, per user decision: one or two repeated segments is too thin a sample to call a fitness trend).
 6. **Window rescale**: `F_w = 100 * (S_w - Smin) / (Smax - Smin)` across all scored workouts; if `Smax == Smin` (single scored workout) emit that workout at score 50. Output sorted by workout date ascending.
 
 Pure C#/LINQ, no I/O. No user-facing parameters; `K_STALL` is an internal constant.
@@ -267,8 +267,8 @@ None — no schema change. Scores are computed on demand from existing cached da
 
 #### Automated
 
-- [x] 2.1 Backend builds: `dotnet build strava-segments-performance-backend`
-- [x] 2.2 All backend tests pass: `dotnet test strava-segments-performance-backend-tests`
+- [x] 2.1 Backend builds: `dotnet build strava-segments-performance-backend` — 6add13f
+- [x] 2.2 All backend tests pass: `dotnet test strava-segments-performance-backend-tests` — 6add13f
 
 #### Manual
 
@@ -280,8 +280,8 @@ None — no schema change. Scores are computed on demand from existing cached da
 
 #### Automated
 
-- [ ] 3.1 Frontend builds: `npm run build`
-- [ ] 3.2 Existing unit tests pass: `npm test`
+- [x] 3.1 Frontend builds: `npm run build`
+- [x] 3.2 Existing unit tests pass: `npm test`
 
 #### Manual
 
