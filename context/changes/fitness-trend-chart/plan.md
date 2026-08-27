@@ -256,19 +256,19 @@ None — no schema change. Scores are computed on demand from existing cached da
 
 #### Automated
 
-- [x] 1.1 Backend builds: `dotnet build strava-segments-performance-backend`
-- [x] 1.2 Scoring unit tests pass: `dotnet test strava-segments-performance-backend-tests`
+- [x] 1.1 Backend builds: `dotnet build strava-segments-performance-backend` — a3ccad9
+- [x] 1.2 Scoring unit tests pass: `dotnet test strava-segments-performance-backend-tests` — a3ccad9
 
 #### Manual
 
-- [x] 1.3 Spot-check a hand-computed fixture against the test's expected scores
+- [x] 1.3 Spot-check a hand-computed fixture against the test's expected scores — a3ccad9
 
 ### Phase 2: Analysis API endpoint
 
 #### Automated
 
-- [ ] 2.1 Backend builds: `dotnet build strava-segments-performance-backend`
-- [ ] 2.2 All backend tests pass: `dotnet test strava-segments-performance-backend-tests`
+- [x] 2.1 Backend builds: `dotnet build strava-segments-performance-backend`
+- [x] 2.2 All backend tests pass: `dotnet test strava-segments-performance-backend-tests`
 
 #### Manual
 

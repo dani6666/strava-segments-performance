@@ -238,4 +238,13 @@ app.MapGet("/api/workouts/fetch-status", async (HttpContext ctx, AppDbContext db
     return Results.Ok(ToFetchStatusDto(status ?? new WorkoutFetchStatus { Status = FetchStatusState.Idle }));
 }).RequireAuthorization();
 
+app.MapGet("/api/analysis/fitness-trend", async (HttpContext ctx, AppDbContext db, DateTime? from, DateTime? to) =>
+{
+    var stravaId = long.Parse(ctx.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    var user = await db.Users.FirstAsync(u => u.StravaAthleteId == stravaId);
+
+    var series = await FitnessTrendQuery.GetForUserAsync(db, user.Id, from, to);
+    return Results.Ok(series);
+}).RequireAuthorization();
+
 app.Run();
