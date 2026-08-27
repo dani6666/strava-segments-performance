@@ -185,29 +185,29 @@ None. No schema change; the range is not persisted. The channel payload type cha
 
 #### Automated
 
-- [x] 1.1 Solution builds: `dotnet build`
-- [x] 1.2 Backend tests pass: `dotnet test`
-- [x] 1.3 Test: `ListActivitiesPageAsync` includes `after`/`before` epoch seconds when bounds given
-- [x] 1.4 Test: no `after`/`before` in URL when bounds null (all-time preserved)
-- [x] 1.5 Test: `POST /api/workouts/fetch` returns 400 on `After > Before`, Accepted/OK otherwise
+- [x] 1.1 Solution builds: `dotnet build` — 9d54e5e
+- [x] 1.2 Backend tests pass: `dotnet test` — 9d54e5e
+- [x] 1.3 Test: `ListActivitiesPageAsync` includes `after`/`before` epoch seconds when bounds given — 9d54e5e
+- [x] 1.4 Test: no `after`/`before` in URL when bounds null (all-time preserved) — 9d54e5e
+- [x] 1.5 Test: `POST /api/workouts/fetch` returns 400 on `After > Before`, Accepted/OK otherwise — 9d54e5e
 
 #### Manual
 
-- [x] 1.6 Bounded fetch caches only in-window rides; wider fetch adds rest without re-fetch
-- [x] 1.7 Empty-body (all-time) fetch behaves as before
+- [x] 1.6 Bounded fetch caches only in-window rides; wider fetch adds rest without re-fetch — 9d54e5e
+- [x] 1.7 Empty-body (all-time) fetch behaves as before — 9d54e5e
 
 ### Phase 2: Frontend — timeframe pickers wired into the fetch trigger
 
 #### Automated
 
-- [x] 2.1 Frontend builds: `npm run build`
-- [x] 2.2 Frontend tests pass: `npm test`
-- [x] 2.3 Spec: service builds correct UTC `after`/`before` body; omits blank bounds
-- [x] 2.4 Spec: `invalidRange` true when `from > to`, false for blank/valid
+- [x] 2.1 Frontend builds: `npm run build` — 9d54e5e
+- [x] 2.2 Frontend tests pass: `npm test` — 9d54e5e
+- [x] 2.3 Spec: service builds correct UTC `after`/`before` body; omits blank bounds — 9d54e5e
+- [x] 2.4 Spec: `invalidRange` true when `from > to`, false for blank/valid — 9d54e5e
 
 #### Manual
 
-- [x] 2.5 From/To then Fetch pulls only in-window rides
-- [x] 2.6 Both blank + Fetch pulls all history
-- [x] 2.7 From after To disables button with message; clearing re-enables
-- [x] 2.8 Reload resets range to blank (all-time)
+- [x] 2.5 From/To then Fetch pulls only in-window rides — 9d54e5e
+- [x] 2.6 Both blank + Fetch pulls all history — 9d54e5e
+- [x] 2.7 From after To disables button with message; clearing re-enables — e9234f5
+- [x] 2.8 Reload resets range to blank (all-time) — 9d54e5e
