@@ -29,6 +29,27 @@
     }
   }
 
+  .timeframe-panel {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.85rem;
+      color: #555;
+      gap: 0.25rem;
+    }
+
+    .range-error {
+      color: #c0392b;
+      margin: 0;
+    }
+  }
+
   .fetch-panel {
     text-align: center;
     padding: 4rem 2rem;

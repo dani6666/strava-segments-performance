@@ -163,6 +163,9 @@ app.MapPost("/api/auth/logout", async (HttpContext ctx) =>
     return Results.Ok();
 });
 
+static DateTime? NormalizeUtc(DateTime? value) =>
+    value is null ? null : DateTime.SpecifyKind(value.Value, DateTimeKind.Utc);
+
 static object ToFetchStatusDto(WorkoutFetchStatus status) => new
 {
     status = status.Status switch
@@ -187,8 +190,14 @@ static object ToFetchStatusDto(WorkoutFetchStatus status) => new
     errorMessage = status.ErrorMessage
 };
 
-app.MapPost("/api/workouts/fetch", async (HttpContext ctx, AppDbContext db, WorkoutFetchChannel channel) =>
+app.MapPost("/api/workouts/fetch", async (HttpContext ctx, AppDbContext db, WorkoutFetchChannel channel, FetchWorkoutsRequest? request) =>
 {
+    var afterUtc = NormalizeUtc(request?.After);
+    var beforeUtc = NormalizeUtc(request?.Before);
+
+    if (!FetchWindowValidator.IsValidRange(afterUtc, beforeUtc))
+        return Results.BadRequest(new { error = "'after' must not be later than 'before'." });
+
     var stravaId = long.Parse(ctx.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
     var user = await db.Users.FirstAsync(u => u.StravaAthleteId == stravaId);
 
@@ -223,7 +232,7 @@ app.MapPost("/api/workouts/fetch", async (HttpContext ctx, AppDbContext db, Work
         }
     }
 
-    await channel.Writer.WriteAsync(user.Id);
+    await channel.Writer.WriteAsync(new FetchRequest(user.Id, afterUtc, beforeUtc));
 
     var status = await db.WorkoutFetchStatuses.FirstAsync(s => s.UserId == user.Id);
     return Results.Accepted(value: ToFetchStatusDto(status));
@@ -239,3 +248,5 @@ app.MapGet("/api/workouts/fetch-status", async (HttpContext ctx, AppDbContext db
 }).RequireAuthorization();
 
 app.Run();
+
+record FetchWorkoutsRequest(DateTime? After, DateTime? Before);
