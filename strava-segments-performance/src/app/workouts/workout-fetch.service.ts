@@ -22,9 +22,28 @@ const IDLE_STATUS: WorkoutFetchStatus = {
   errorMessage: null
 };
 
+export interface FetchWindowBody {
+  after?: string;
+  before?: string;
+}
+
+/** Local calendar day (YYYY-MM-DD) -> start of that day in the browser's timezone, as a UTC ISO instant. */
+export function startOfLocalDayUtcIso(dateStr: string): string {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day, 0, 0, 0, 0).toISOString();
+}
+
+/** Local calendar day (YYYY-MM-DD) -> start of the NEXT day in the browser's timezone, as a UTC ISO instant. */
+export function startOfNextLocalDayUtcIso(dateStr: string): string {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day + 1, 0, 0, 0, 0).toISOString();
+}
+
 @Injectable({ providedIn: 'root' })
 export class WorkoutFetchService {
   status = signal<WorkoutFetchStatus>(IDLE_STATUS);
+  fromDate = signal<string | null>(null);
+  toDate = signal<string | null>(null);
 
   private pollingSub?: Subscription;
 
@@ -32,12 +51,23 @@ export class WorkoutFetchService {
 
   trigger() {
     return this.http
-      .post<WorkoutFetchStatus>(`${environment.apiBaseUrl}/api/workouts/fetch`, {}, { withCredentials: true })
+      .post<WorkoutFetchStatus>(`${environment.apiBaseUrl}/api/workouts/fetch`, this.buildFetchWindowBody(), {
+        withCredentials: true
+      })
       .pipe(tap(status => this.status.set(status)))
       .subscribe({
         next: () => this.startPolling(),
         error: err => this.setFailed(err)
       });
+  }
+
+  private buildFetchWindowBody(): FetchWindowBody {
+    const body: FetchWindowBody = {};
+    const from = this.fromDate();
+    const to = this.toDate();
+    if (from) body.after = startOfLocalDayUtcIso(from);
+    if (to) body.before = startOfNextLocalDayUtcIso(to);
+    return body;
   }
 
   checkStatus() {

@@ -50,6 +50,6 @@ dotnet test         # run tests
 ```
 npm start           # ng serve (dev server)
 npm run build       # ng build (production)
-npm test            # ng test (Karma)
+npm test            # ng test (Vitest via @angular/build:unit-test; single-run, non-watch)
 npm run watch       # ng build --watch --configuration development
 ```

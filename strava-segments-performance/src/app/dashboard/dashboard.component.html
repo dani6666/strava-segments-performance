@@ -4,13 +4,27 @@
     <button (click)="authService.logout()">Logout</button>
   </header>
 
+  <section class="timeframe-panel">
+    <label>
+      From
+      <input type="date" [value]="fetchService.fromDate() ?? ''" (input)="onFromChange($event)" />
+    </label>
+    <label>
+      To
+      <input type="date" [value]="fetchService.toDate() ?? ''" (input)="onToChange($event)" />
+    </label>
+    @if (invalidRange()) {
+      <p class="range-error">"From" must not be later than "To".</p>
+    }
+  </section>
+
   <section class="fetch-panel">
     @switch (fetchService.status().status) {
       @case ('idle') {
-        <button (click)="trigger()">Fetch my workouts</button>
+        <button [disabled]="invalidRange()" (click)="trigger()">Fetch my workouts</button>
       }
       @case ('interrupted') {
-        <button (click)="trigger()">Resume fetch</button>
+        <button [disabled]="invalidRange()" (click)="trigger()">Resume fetch</button>
       }
       @case ('pending') {
         <div class="fetch-progress">
@@ -34,7 +48,7 @@
       @case ('completed') {
         <div class="fetch-complete">
           <p>{{ fetchService.status().activitiesProcessed }} cycling activities cached</p>
-          <button (click)="trigger()">Check for new rides</button>
+          <button [disabled]="invalidRange()" (click)="trigger()">Check for new rides</button>
         </div>
 
         @switch (analysisService.loadState()) {
@@ -55,7 +69,7 @@
       @case ('failed') {
         <div class="fetch-error">
           <p>{{ fetchService.status().errorMessage }}</p>
-          <button (click)="trigger()">Retry</button>
+          <button [disabled]="invalidRange()" (click)="trigger()">Retry</button>
         </div>
       }
     }

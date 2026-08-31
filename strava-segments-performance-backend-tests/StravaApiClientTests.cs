@@ -61,10 +61,54 @@ public class StravaApiClientTests
         var handler = new StubHandler(_ => JsonResponse(HttpStatusCode.OK, shortPage));
         var client = new StravaApiClient(new HttpClient(handler), new FakeTokenService(), new FakeTimeProvider());
 
-        var result = await client.ListActivitiesPageAsync(TestUser, page: 1, perPage: 50, CancellationToken.None);
+        var result = await client.ListActivitiesPageAsync(TestUser, page: 1, perPage: 50, afterUtc: null, beforeUtc: null, CancellationToken.None);
 
         Assert.Equal(2, result.Count);
         Assert.True(result.Count < 50);
+    }
+
+    [Fact]
+    public async Task ListActivitiesPageAsync_AppendsAfterAndBefore_WhenBothBoundsGiven()
+    {
+        var handler = new StubHandler(_ => JsonResponse(HttpStatusCode.OK, Array.Empty<object>()));
+        var client = new StravaApiClient(new HttpClient(handler), new FakeTokenService(), new FakeTimeProvider());
+        var afterUtc = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var beforeUtc = new DateTime(2026, 2, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        await client.ListActivitiesPageAsync(TestUser, page: 1, perPage: 50, afterUtc, beforeUtc, CancellationToken.None);
+
+        var query = handler.Requests[0].RequestUri!.Query;
+        Assert.Contains($"after={new DateTimeOffset(afterUtc).ToUnixTimeSeconds()}", query);
+        Assert.Contains($"before={new DateTimeOffset(beforeUtc).ToUnixTimeSeconds()}", query);
+    }
+
+    [Fact]
+    public async Task ListActivitiesPageAsync_OmitsAfterAndBefore_WhenBoundsAreNull()
+    {
+        var handler = new StubHandler(_ => JsonResponse(HttpStatusCode.OK, Array.Empty<object>()));
+        var client = new StravaApiClient(new HttpClient(handler), new FakeTokenService(), new FakeTimeProvider());
+
+        await client.ListActivitiesPageAsync(TestUser, page: 1, perPage: 50, afterUtc: null, beforeUtc: null, CancellationToken.None);
+
+        var query = handler.Requests[0].RequestUri!.Query;
+        Assert.DoesNotContain("after=", query);
+        Assert.DoesNotContain("before=", query);
+    }
+
+    [Theory]
+    [InlineData(null, null, true)]
+    [InlineData("2026-01-01", null, true)]
+    [InlineData(null, "2026-01-01", true)]
+    [InlineData("2026-01-01", "2026-02-01", true)]
+    [InlineData("2026-01-01", "2026-01-01", true)]
+    [InlineData("2026-02-01", "2026-01-01", false)]
+    public void FetchWindowValidator_IsValidRange_RejectsOnlyWhenAfterIsLaterThanBefore(
+        string? after, string? before, bool expected)
+    {
+        DateTime? afterUtc = after is null ? null : DateTime.Parse(after);
+        DateTime? beforeUtc = before is null ? null : DateTime.Parse(before);
+
+        Assert.Equal(expected, FetchWindowValidator.IsValidRange(afterUtc, beforeUtc));
     }
 
     [Fact]
@@ -76,7 +120,7 @@ public class StravaApiClientTests
             _ => JsonResponse(HttpStatusCode.OK, Array.Empty<object>()));
         var client = new StravaApiClient(new HttpClient(handler), tokenService, new FakeTimeProvider());
 
-        await client.ListActivitiesPageAsync(TestUser, page: 1, perPage: 50, CancellationToken.None);
+        await client.ListActivitiesPageAsync(TestUser, page: 1, perPage: 50, afterUtc: null, beforeUtc: null, CancellationToken.None);
 
         Assert.Equal(1, tokenService.ForceRefreshCalls);
         Assert.Equal(2, handler.Requests.Count);
@@ -97,7 +141,7 @@ public class StravaApiClientTests
             _ => JsonResponse(HttpStatusCode.OK, Array.Empty<object>()));
         var client = new StravaApiClient(new HttpClient(handler), new FakeTokenService(), timeProvider);
 
-        var task = client.ListActivitiesPageAsync(TestUser, page: 1, perPage: 50, CancellationToken.None);
+        var task = client.ListActivitiesPageAsync(TestUser, page: 1, perPage: 50, afterUtc: null, beforeUtc: null, CancellationToken.None);
 
         Assert.False(task.IsCompleted);
         timeProvider.Advance(TimeSpan.FromSeconds(30));
@@ -122,7 +166,7 @@ public class StravaApiClientTests
         var client = new StravaApiClient(new HttpClient(handler), new FakeTokenService(), new FakeTimeProvider());
 
         await Assert.ThrowsAsync<TimeoutException>(
-            () => client.ListActivitiesPageAsync(TestUser, page: 1, perPage: 50, CancellationToken.None));
+            () => client.ListActivitiesPageAsync(TestUser, page: 1, perPage: 50, afterUtc: null, beforeUtc: null, CancellationToken.None));
 
         // One attempt, then aborted — never retried past the cap.
         Assert.Single(handler.Requests);

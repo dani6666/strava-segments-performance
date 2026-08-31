@@ -22,13 +22,13 @@ public class WorkoutFetchWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await foreach (var userId in _channel.Reader.ReadAllAsync(stoppingToken))
+        await foreach (var request in _channel.Reader.ReadAllAsync(stoppingToken))
         {
             using var opCts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
             opCts.CancelAfter(WholeFetchTimeout);
             try
             {
-                await ProcessUserAsync(userId, opCts.Token);
+                await ProcessUserAsync(request, opCts.Token);
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
@@ -37,19 +37,20 @@ public class WorkoutFetchWorker : BackgroundService
             }
             catch (OperationCanceledException) when (opCts.IsCancellationRequested)
             {
-                _logger.LogError("Workout fetch for user {UserId} exceeded {Timeout} and was aborted", userId, WholeFetchTimeout);
-                await MarkFailedAsync(userId, $"Fetch exceeded the {WholeFetchTimeout.TotalHours}h limit and was aborted.", stoppingToken);
+                _logger.LogError("Workout fetch for user {UserId} exceeded {Timeout} and was aborted", request.UserId, WholeFetchTimeout);
+                await MarkFailedAsync(request.UserId, $"Fetch exceeded the {WholeFetchTimeout.TotalHours}h limit and was aborted.", stoppingToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Workout fetch failed for user {UserId}", userId);
-                await MarkFailedAsync(userId, ex.Message, stoppingToken);
+                _logger.LogError(ex, "Workout fetch failed for user {UserId}", request.UserId);
+                await MarkFailedAsync(request.UserId, ex.Message, stoppingToken);
             }
         }
     }
 
-    private async Task ProcessUserAsync(int userId, CancellationToken ct)
+    private async Task ProcessUserAsync(FetchRequest request, CancellationToken ct)
     {
+        var userId = request.UserId;
         using var scope = _scopeFactory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var stravaClient = scope.ServiceProvider.GetRequiredService<StravaApiClient>();
@@ -71,7 +72,7 @@ public class WorkoutFetchWorker : BackgroundService
         int discovered;
         while (true)
         {
-            var summaries = await stravaClient.ListActivitiesPageAsync(user, page, PageSize, ct);
+            var summaries = await stravaClient.ListActivitiesPageAsync(user, page, PageSize, request.AfterUtc, request.BeforeUtc, ct);
             if (summaries.Count == 0)
                 break;
 
