@@ -1,10 +1,10 @@
 ---
 change_id: fitness-trend-chart
 title: Fitness trend chart
-status: impl_reviewed
+status: archived
 created: 2026-08-27
 updated: 2026-08-31
-archived_at: null
+archived_at: 2026-08-31T19:46:47Z
 ---
 
 ## Notes
