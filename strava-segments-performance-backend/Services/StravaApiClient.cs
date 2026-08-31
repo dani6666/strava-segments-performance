@@ -23,10 +23,16 @@ public class StravaApiClient
     }
 
     public async Task<IReadOnlyList<StravaActivitySummary>> ListActivitiesPageAsync(
-        User user, int page, int perPage, CancellationToken ct)
+        User user, int page, int perPage, DateTime? afterUtc, DateTime? beforeUtc, CancellationToken ct)
     {
+        var query = $"athlete/activities?page={page}&per_page={perPage}";
+        if (afterUtc is not null)
+            query += $"&after={new DateTimeOffset(afterUtc.Value, TimeSpan.Zero).ToUnixTimeSeconds()}";
+        if (beforeUtc is not null)
+            query += $"&before={new DateTimeOffset(beforeUtc.Value, TimeSpan.Zero).ToUnixTimeSeconds()}";
+
         using var response = await SendAsync(
-            user, () => new HttpRequestMessage(HttpMethod.Get, $"athlete/activities?page={page}&per_page={perPage}"), ct);
+            user, () => new HttpRequestMessage(HttpMethod.Get, query), ct);
 
         var activities = await response.Content.ReadFromJsonAsync<List<StravaActivitySummary>>(cancellationToken: ct);
         return activities ?? [];

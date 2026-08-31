@@ -2,10 +2,12 @@ using System.Threading.Channels;
 
 namespace StravaSegmentsPerformanceBackend.Services;
 
+public record FetchRequest(int UserId, DateTime? AfterUtc, DateTime? BeforeUtc);
+
 public class WorkoutFetchChannel
 {
-    private readonly Channel<int> _channel = Channel.CreateUnbounded<int>();
+    private readonly Channel<FetchRequest> _channel = Channel.CreateUnbounded<FetchRequest>();
 
-    public ChannelWriter<int> Writer => _channel.Writer;
-    public ChannelReader<int> Reader => _channel.Reader;
+    public ChannelWriter<FetchRequest> Writer => _channel.Writer;
+    public ChannelReader<FetchRequest> Reader => _channel.Reader;
 }

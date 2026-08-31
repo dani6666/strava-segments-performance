@@ -3,7 +3,7 @@ project: "Strava Segments Performance"
 version: 1
 status: draft
 created: 2026-06-10
-updated: 2026-08-26
+updated: 2026-08-31
 prd_version: 1
 main_goal: speed
 top_blocker: external
@@ -30,7 +30,7 @@ Cyclists who repeat the same Strava segments cannot tell whether their fitness i
 | S-01 | strava-oauth-login   | authenticate via Strava OAuth and land on an authenticated UI | —             | FR-001              | done     |
 | S-02 | workout-data-fetch   | trigger workout fetching from Strava with progress indication | S-01          | FR-003              | done     |
 | S-03 | fitness-trend-chart  | see a fitness trend chart (0-100 score over time)             | S-02          | FR-003, FR-004, US-01 | proposed |
-| S-04 | timeframe-selection  | filter analysis by a selected timeframe                       | S-02          | FR-002              | proposed |
+| S-04 | timeframe-selection  | filter analysis by a selected timeframe                       | S-02          | FR-002              | done |
 
 ## Baseline
 
@@ -98,7 +98,7 @@ None. All technical elements are introduced in the vertical slices that first ne
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Nice-to-have (PRD priority). With speed as the sequencing goal, this is the first candidate to cut if the deadline pressures. The chart already serves as a visual timeframe — users can eyeball trends without explicit filtering. Building alongside S-03 requires agreeing on a date-range filter contract (e.g. query params on the cached-workout data) up front so the two integrate cleanly once S-03's analysis endpoint lands.
-- **Status:** proposed
+- **Status:** done
 
 ## Backlog Handoff
 
@@ -123,4 +123,5 @@ None carried from PRD. The primary external risk (Strava API access and rate lim
 ## Done
 
 - **S-02: user can trigger workout fetching from Strava, see progress as data loads, and have fetched workouts cached for reuse** — Archived 2026-08-26 → `context/archive/2026-07-10-workout-data-fetch/`. Lesson: —.
+- **S-04: user can select a timeframe to narrow the analysis window instead of analyzing all workouts** — Archived 2026-08-31 → `context/archive/2026-08-27-timeframe-selection/`. Lesson: —.
 
