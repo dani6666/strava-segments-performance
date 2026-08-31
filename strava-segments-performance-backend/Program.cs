@@ -115,8 +115,11 @@ var app = builder.Build();
 
 app.UseForwardedHeaders();
 
-using (var scope = app.Services.CreateScope())
+// Skipped under the "Testing" environment: the integration test host runs against
+// EF Core InMemory, and MigrateAsync/ExecuteUpdateAsync are Npgsql-specific.
+if (!app.Environment.IsEnvironment("Testing"))
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.MigrateAsync();
 
@@ -265,3 +268,5 @@ app.MapGet("/api/analysis/fitness-trend", async (HttpContext ctx, AppDbContext d
 app.Run();
 
 record FetchWorkoutsRequest(DateTime? After, DateTime? Before);
+
+public partial class Program { }
