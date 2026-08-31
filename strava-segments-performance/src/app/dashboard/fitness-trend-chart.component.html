@@ -1,0 +1,5 @@
+@if (series().length === 0) {
+  <p class="empty-state">No fitness data yet</p>
+} @else {
+  <canvas baseChart [data]="chartData()" [options]="chartOptions" [type]="'line'"></canvas>
+}

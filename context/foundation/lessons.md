@@ -36,3 +36,10 @@
 - **Problem**: Generating a migration and immediately running `dotnet ef database update` locks in a schema before the user has had a chance to review naming/shape. If they then want a rename (e.g. `StravaEffortId` → `StravaSegmentEffortId`), the migration already applied has to be rolled back (`dotnet ef database update <previous-migration>`), the migration file removed (`dotnet ef migrations remove --force`), and a new one regenerated — extra churn that review-before-apply avoids.
 - **Rule**: After generating a migration, stop and let the user review the entity/model diff before running `dotnet ef database update`. Only apply once they explicitly confirm. This is now the default for new migrations during implementation, not just when the user asks for it once.
 - **Applies to**: any `/10x-implement` phase that generates an EF Core (or equivalent ORM) migration
+
+## Never use single-letter or cryptic abbreviations for object-creation helpers
+
+- **Context**: Any code that introduces a factory/builder method or local helper whose job is constructing a new object (test fixture builders, DTO factories, mapping helpers) — flagged during S-03 fitness-trend-chart Phase 1 (`FitnessScoringTests.cs`, helpers originally named `D(int day)` and `E(...)`).
+- **Problem**: Short names like `D()`/`E()` save a few keystrokes at the call site but force the reader to jump to the declaration to know what's being built; they also collide easily and don't show up usefully in search/grep.
+- **Rule**: Name object-creation helpers descriptively (e.g. `CreateDate`, `CreateEffort`, `BuildUser`) — never single letters or cryptic abbreviations. Applies equally to test code and production code; there is no "it's just a test helper" exception.
+- **Applies to**: all code, especially test fixture factories and DTO/entity builders

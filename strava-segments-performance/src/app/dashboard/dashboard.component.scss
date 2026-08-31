@@ -101,6 +101,18 @@
       color: #c0392b;
     }
   }
+
+  .analysis-loading {
+    text-align: center;
+    color: #777;
+    padding: 2rem;
+  }
+
+  .analysis-error {
+    text-align: center;
+    color: #c0392b;
+    padding: 2rem;
+  }
 }
 
 @keyframes spin {

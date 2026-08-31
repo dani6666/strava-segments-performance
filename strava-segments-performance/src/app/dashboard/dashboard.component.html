@@ -50,6 +50,21 @@
           <p>{{ fetchService.status().activitiesProcessed }} cycling activities cached</p>
           <button [disabled]="invalidRange()" (click)="trigger()">Check for new rides</button>
         </div>
+
+        @switch (analysisService.loadState()) {
+          @case ('loading') {
+            <p class="analysis-loading">Loading fitness trend...</p>
+          }
+          @case ('idle') {
+            <p class="analysis-loading">Loading fitness trend...</p>
+          }
+          @case ('error') {
+            <p class="analysis-error">Couldn't load fitness trend.</p>
+          }
+          @case ('loaded') {
+            <app-fitness-trend-chart [series]="analysisService.series() ?? []" />
+          }
+        }
       }
       @case ('failed') {
         <div class="fetch-error">

@@ -29,7 +29,7 @@ Cyclists who repeat the same Strava segments cannot tell whether their fitness i
 | ---- | -------------------- | ------------------------------------------------------------- | ------------- | ------------------- | -------- |
 | S-01 | strava-oauth-login   | authenticate via Strava OAuth and land on an authenticated UI | —             | FR-001              | done     |
 | S-02 | workout-data-fetch   | trigger workout fetching from Strava with progress indication | S-01          | FR-003              | done     |
-| S-03 | fitness-trend-chart  | see a fitness trend chart (0-100 score over time)             | S-02          | FR-003, FR-004, US-01 | proposed |
+| S-03 | fitness-trend-chart  | see a fitness trend chart (0-100 score over time)             | S-02          | FR-003, FR-004, US-01 | done     |
 | S-04 | timeframe-selection  | filter analysis by a selected timeframe                       | S-02          | FR-002              | done |
 
 ## Baseline
@@ -86,7 +86,7 @@ None. All technical elements are introduced in the vertical slices that first ne
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** The scoring formula is the core intellectual risk (PRD FR-004: "formula validation is the core risk to iterate on"). If the formula produces nonsensical scores, the chart is useless — but this can only be validated with real data, so it's correctly sequenced after data fetching.
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: Timeframe selection
 
@@ -123,5 +123,6 @@ None carried from PRD. The primary external risk (Strava API access and rate lim
 ## Done
 
 - **S-02: user can trigger workout fetching from Strava, see progress as data loads, and have fetched workouts cached for reuse** — Archived 2026-08-26 → `context/archive/2026-07-10-workout-data-fetch/`. Lesson: —.
+- **S-03: user can see a fitness trend chart showing a 0-100 score per workout, computed from segment elapsed time + average heart rate against personal history** — Archived 2026-08-31 → `context/archive/2026-08-27-fitness-trend-chart/`. Lesson: —.
 - **S-04: user can select a timeframe to narrow the analysis window instead of analyzing all workouts** — Archived 2026-08-31 → `context/archive/2026-08-27-timeframe-selection/`. Lesson: —.
 
