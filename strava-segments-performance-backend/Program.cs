@@ -163,8 +163,14 @@ app.MapPost("/api/auth/logout", async (HttpContext ctx) =>
     return Results.Ok();
 });
 
-static DateTime? NormalizeUtc(DateTime? value) =>
-    value is null ? null : DateTime.SpecifyKind(value.Value, DateTimeKind.Utc);
+static DateTime? NormalizeUtc(DateTime? value) => value switch
+{
+    null => null,
+    { Kind: DateTimeKind.Utc } => value,
+    { Kind: DateTimeKind.Local } => value.Value.ToUniversalTime(),
+    // Unspecified (payload had no offset): assume the documented UTC contract.
+    _ => DateTime.SpecifyKind(value.Value, DateTimeKind.Utc)
+};
 
 static object ToFetchStatusDto(WorkoutFetchStatus status) => new
 {

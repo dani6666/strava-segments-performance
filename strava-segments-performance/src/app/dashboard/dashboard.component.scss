@@ -71,12 +71,12 @@
       }
 
       &:disabled {
-        background: #ccc !important;
-        color: #888 !important;
-        cursor: not-allowed !important;
+        background: #ccc;
+        color: #888;
+        cursor: not-allowed;
 
         &:hover {
-          background: #ccc !important;
+          background: #ccc;
         }
       }
     }

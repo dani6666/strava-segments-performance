@@ -1,7 +1,7 @@
 ---
 change_id: timeframe-selection
 title: Timeframe selection
-status: implemented
+status: impl_reviewed
 created: 2026-08-27
 updated: 2026-08-27
 archived_at: null
