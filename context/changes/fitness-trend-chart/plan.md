@@ -272,9 +272,9 @@ None — no schema change. Scores are computed on demand from existing cached da
 
 #### Manual
 
-- [x] 2.3 `GET /api/analysis/fitness-trend` returns a non-empty [0,100] series with best/worst near 100/0
-- [x] 2.4 `?from&to` narrows the series and shifts scores (window-relative)
-- [x] 2.5 A user with no repeated segments gets `[]`
+- [x] 2.3 `GET /api/analysis/fitness-trend` returns a non-empty [0,100] series with best/worst near 100/0 — f43283c
+- [x] 2.4 `?from&to` narrows the series and shifts scores (window-relative) — f43283c
+- [x] 2.5 A user with no repeated segments gets `[]` — f43283c
 
 ### Phase 3: Frontend trend chart
 
@@ -285,8 +285,8 @@ None — no schema change. Scores are computed on demand from existing cached da
 
 #### Manual
 
-- [x] 3.3 Completed state shows a line chart of score vs date
-- [x] 3.4 Y-axis fixed 0–100; hover shows date + score
-- [x] 3.5 Best workout near 100, worst near 0
-- [x] 3.6 No-scorable-data user sees the empty state, not a broken chart
-- [x] 3.7 No console errors; chart legible in the dashboard layout
+- [x] 3.3 Completed state shows a line chart of score vs date — f43283c
+- [x] 3.4 Y-axis fixed 0–100; hover shows date + score — f43283c
+- [x] 3.5 Best workout near 100, worst near 0 — f43283c
+- [x] 3.6 No-scorable-data user sees the empty state, not a broken chart — f43283c
+- [x] 3.7 No console errors; chart legible in the dashboard layout — f43283c
