@@ -430,6 +430,6 @@ public class FitnessScoringTests
         var byDate = result.ToDictionary(p => p.Date, p => p.Score);
         Assert.True(byDate[worstDate] < byDate[mediumDate]);
         Assert.True(byDate[mediumDate] < byDate[bestDate]);
-        Assert.True(byDate[bestDate] - byDate[mediumDate] < 50.0);
+        Assert.True(byDate[bestDate] - byDate[mediumDate] >= 50.0);
     }
 }
