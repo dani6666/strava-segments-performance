@@ -225,22 +225,22 @@ None.
 
 #### Automated
 
-- [x] 1.1 Backend test project builds
-- [x] 1.2 New test passes (`--filter FitnessScoringTests`)
-- [x] 1.3 Full backend test suite passes
+- [x] 1.1 Backend test project builds — d8d3e4b
+- [x] 1.2 New test passes (`--filter FitnessScoringTests`) — d8d3e4b
+- [x] 1.3 Full backend test suite passes — d8d3e4b
 
 #### Manual
 
-- [x] 1.4 Expected ordering/bands derived by hand, not from scorer output
-- [x] 1.5 Improving-fitness signal, stall, and null-HR effort all present and commented
-- [x] 1.6 Cookbook §6.1 is actionable
+- [x] 1.4 Expected ordering/bands derived by hand, not from scorer output — d8d3e4b
+- [x] 1.5 Improving-fitness signal, stall, and null-HR effort all present and commented — d8d3e4b
+- [x] 1.6 Cookbook §6.1 is actionable — d8d3e4b
 
 ### Phase 2: Wire the CI gate
 
 #### Automated
 
-- [ ] 2.1 Workflow YAML valid
-- [ ] 2.2 `dotnet test` runs the backend test project green locally
+- [x] 2.1 Workflow YAML valid
+- [x] 2.2 `dotnet test` runs the backend test project green locally
 
 #### Manual
 
@@ -252,9 +252,9 @@ None.
 
 #### Automated
 
-- [ ] 3.1 New test passes (`--filter FitnessScoringTests`)
-- [ ] 3.2 Full backend test suite passes
-- [ ] 3.3 No network calls in the test
+- [x] 3.1 New test passes (`--filter FitnessScoringTests`)
+- [x] 3.2 Full backend test suite passes
+- [x] 3.3 No network calls in the test
 
 #### Manual
 

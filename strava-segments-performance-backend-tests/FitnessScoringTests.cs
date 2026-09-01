@@ -363,4 +363,73 @@ public class FitnessScoringTests
         Assert.True(result[0].Score < 20.0);
         Assert.True(result[^1].Score > 80.0);
     }
+
+    [Fact]
+    public void Score_RealActivities_MatchKnownFitnessOrdering()
+    {
+        // Frozen (never live-fetched) real Strava data from 4 of the user's own rides,
+        // transcribed once at authoring time and anonymized - Strava segment/activity ids
+        // remapped to small integers, segment names/activity names/user id dropped. Elapsed
+        // time and average heart rate are the real recorded values on the 6 segments shared
+        // across all three of the worst/medium/best rides (the first 6 segments common to all
+        // three, in the order they appear in the medium ride - chosen before computing any
+        // cost, not cherry-picked for outcome). The expected ordering is the user's own
+        // independent ground truth on their fitness that day, not a value derived from running
+        // the scorer; the user separately expects "best" at least 50 points better than
+        // "medium". A 4th, unrelated ride shares no segments with the other three and must be
+        // entirely absent from the trend.
+        var worstDate = new DateTime(2025, 4, 16);   // "worst" - real ride, real segments
+        var mediumDate = new DateTime(2024, 8, 11);  // "medium"
+        var bestDate = new DateTime(2025, 8, 27);    // "best"
+        var unrelatedDate = new DateTime(2026, 8, 9); // shares no segment with the other three
+
+        var efforts = new[]
+        {
+            // Segment 301
+            new SegmentEffortRecord(301, 303, 154.1, ActivityId: 201, worstDate),
+            new SegmentEffortRecord(301, 228, 160.3, ActivityId: 202, mediumDate),
+            new SegmentEffortRecord(301, 198, 162.2, ActivityId: 203, bestDate),
+
+            // Segment 302
+            new SegmentEffortRecord(302, 295, 157.0, ActivityId: 201, worstDate),
+            new SegmentEffortRecord(302, 249, 153.3, ActivityId: 202, mediumDate),
+            new SegmentEffortRecord(302, 245, 162.0, ActivityId: 203, bestDate),
+
+            // Segment 303
+            new SegmentEffortRecord(303, 637, 160.0, ActivityId: 201, worstDate),
+            new SegmentEffortRecord(303, 547, 156.9, ActivityId: 202, mediumDate),
+            new SegmentEffortRecord(303, 461, 164.0, ActivityId: 203, bestDate),
+
+            // Segment 304
+            new SegmentEffortRecord(304, 510, 152.9, ActivityId: 201, worstDate),
+            new SegmentEffortRecord(304, 519, 152.9, ActivityId: 202, mediumDate),
+            new SegmentEffortRecord(304, 393, 152.3, ActivityId: 203, bestDate),
+
+            // Segment 305
+            new SegmentEffortRecord(305, 794, 162.4, ActivityId: 201, worstDate),
+            new SegmentEffortRecord(305, 760, 155.7, ActivityId: 202, mediumDate),
+            new SegmentEffortRecord(305, 609, 161.9, ActivityId: 203, bestDate),
+
+            // Segment 306
+            new SegmentEffortRecord(306, 257, 157.1, ActivityId: 201, worstDate),
+            new SegmentEffortRecord(306, 214, 148.9, ActivityId: 202, mediumDate),
+            new SegmentEffortRecord(306, 159, 173.9, ActivityId: 203, bestDate),
+
+            // Unrelated ride: segments 401-403 appear nowhere else, so each has < 2 survivors
+            // and contributes zero scored efforts - the whole workout must be absent below.
+            new SegmentEffortRecord(401, 312, 184.3, ActivityId: 204, unrelatedDate),
+            new SegmentEffortRecord(402, 245, 186.0, ActivityId: 204, unrelatedDate),
+            new SegmentEffortRecord(403, 374, 170.1, ActivityId: 204, unrelatedDate)
+        };
+
+        var result = FitnessScoring.Score(efforts);
+
+        Assert.Equal(3, result.Count);
+        Assert.DoesNotContain(result, p => p.Date == unrelatedDate);
+
+        var byDate = result.ToDictionary(p => p.Date, p => p.Score);
+        Assert.True(byDate[worstDate] < byDate[mediumDate]);
+        Assert.True(byDate[mediumDate] < byDate[bestDate]);
+        Assert.True(byDate[bestDate] - byDate[mediumDate] >= 50.0);
+    }
 }

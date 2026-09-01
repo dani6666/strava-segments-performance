@@ -109,12 +109,12 @@ phase lands; before that, the gate is `planned`.
 |------|-------|-----------|---------|
 | lint + format (`dotnet format`, `prettier`) | local + CI | recommended | syntactic / style drift |
 | typecheck / compile (`dotnet build`, `tsc` strict) | local + CI | required | type drift, build breakage |
-| unit + integration (`dotnet test`, `npm test`) | local + CI | required after §3 Phase 1 | logic regressions |
+| unit + integration (`dotnet test`, `npm test`) | local + CI | required | logic regressions |
 | e2e on critical flows | CI on PR | deferred (no runner yet) | broken critical user paths |
 | post-edit hook | local (agent loop) | optional | regressions at edit time |
 | multimodal visual review | CI on PR | optional (not planned — see §7) | visual issues classic diff misses |
 
-CI already exists as GitHub Actions (`.github/workflows/backend-ci.yml`, `frontend-ci.yml`); gate wiring for the unit+integration gate lands with §3 Phase 1.
+CI already exists as GitHub Actions (`.github/workflows/backend-ci.yml`, `frontend-ci.yml`); the unit+integration gate is now wired — `backend-ci.yml` runs `dotnet test` in a `test` job that gates `build-and-deploy` via `needs:`.
 
 ## 6. Cookbook Patterns
 
@@ -152,6 +152,8 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 (Optional. After each phase lands, `/10x-implement` appends a 2–3 line note
 here capturing anything surprising the rollout phase taught.)
+
+- **Testing scoring coverage (§3 Phase 1/3, Risk #1).** Two complementary fixtures, not one: a synthetic exact-shape fixture pins the formula, and a frozen (never live-fetched) real-activity fixture pins reality via ordinal assertions from the user's own ground-truth ranking. Freeze real data into the inline fixture at authoring time — anonymize raw Strava ids, no network calls in the test — the same offline/deterministic discipline as every other unit test in `FitnessScoringTests.cs`.
 
 ## 7. What We Deliberately Don't Test
 
