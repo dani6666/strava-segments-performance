@@ -208,10 +208,10 @@ Deserialize fitness-trend into a small `record TrendPoint(DateTime Date, double 
 
 #### Automated
 
-- [x] 1.1 Backend builds
-- [x] 1.2 Test project builds
-- [x] 1.3 Harness smoke test passes
-- [x] 1.4 Existing tests still pass
+- [x] 1.1 Backend builds — 0bc1b1b
+- [x] 1.2 Test project builds — 0bc1b1b
+- [x] 1.3 Harness smoke test passes — 0bc1b1b
+- [x] 1.4 Existing tests still pass — 0bc1b1b
 
 #### Manual
 
@@ -221,8 +221,8 @@ Deserialize fitness-trend into a small `record TrendPoint(DateTime Date, double 
 
 #### Automated
 
-- [ ] 2.1 All backend tests pass
-- [ ] 2.2 New authorization tests present and green
+- [x] 2.1 All backend tests pass
+- [x] 2.2 New authorization tests present and green
 
 #### Manual
 

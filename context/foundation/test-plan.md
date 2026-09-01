@@ -128,7 +128,11 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.2 Adding a backend integration test (endpoint + user scoping)
 
-- TBD — see §3 Phase 2 (in-memory `AppDbContext`, two-user seed, no-leak assertion).
+Endpoint-level tests use `CustomWebApplicationFactory` (`strava-segments-performance-backend-tests/CustomWebApplicationFactory.cs`), which boots the real app in the `"Testing"` ASP.NET environment against a private EF Core InMemory database (one per factory instance) and a `TestAuthHandler` that authenticates a request as whichever Strava athlete id is sent in the `X-Test-Strava-Id` header — this exercises the endpoint's real claim→user resolution, not just the query/service layer underneath it.
+
+Pattern: construct a fresh `CustomWebApplicationFactory` per test (`IDisposable`, no `IClassFixture`, so seeded data never bleeds across facts), seed via `factory.SeedAsync(db => ...)`, then call `factory.CreateClientAs(stravaAthleteId)` and hit the real route. For a no-leak assertion, seed **two** users with deliberately asymmetric data (different counts/values, not just different ids) so a dropped `UserId`/`StravaAthleteId` filter changes the response instead of coincidentally matching. See `strava-segments-performance-backend-tests/EndpointAuthorizationTests.cs` for the full pattern (fitness-trend no-leak + window filtering, fetch-status caller-only + no-row-falls-back-to-idle).
+
+Note: `Program.cs` reads some configuration (`Frontend:Origin`, `Strava:ClientId/ClientSecret`, the connection string) directly off `builder.Configuration` *before* `builder.Build()` runs — earlier than `WebApplicationFactory`'s `ConfigureWebHost`/`ConfigureAppConfiguration` hooks take effect. `CustomWebApplicationFactory` supplies these via process environment variables (set in a static constructor) instead, since `AddEnvironmentVariables()` is one of `WebApplication.CreateBuilder`'s own default config sources and is visible immediately.
 
 ### 6.3 Adding a fetch-worker resilience test
 
