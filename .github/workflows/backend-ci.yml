@@ -12,6 +12,7 @@ on:
     paths:
       - "strava-segments-performance-backend/**"
       - "strava-segments-performance-backend-tests/**"
+      - ".github/workflows/backend-ci.yml"
 
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/strava-backend
