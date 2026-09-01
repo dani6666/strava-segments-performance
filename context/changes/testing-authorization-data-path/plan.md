@@ -221,8 +221,8 @@ Deserialize fitness-trend into a small `record TrendPoint(DateTime Date, double 
 
 #### Automated
 
-- [x] 2.1 All backend tests pass
-- [x] 2.2 New authorization tests present and green
+- [x] 2.1 All backend tests pass — 1e8ab24
+- [x] 2.2 New authorization tests present and green — 1e8ab24
 
 #### Manual
 
