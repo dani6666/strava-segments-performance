@@ -239,8 +239,8 @@ None.
 
 #### Automated
 
-- [x] 2.1 Workflow YAML valid
-- [x] 2.2 `dotnet test` runs the backend test project green locally
+- [x] 2.1 Workflow YAML valid — 2b8ba17
+- [x] 2.2 `dotnet test` runs the backend test project green locally — 2b8ba17
 
 #### Manual
 
@@ -252,9 +252,9 @@ None.
 
 #### Automated
 
-- [x] 3.1 New test passes (`--filter FitnessScoringTests`)
-- [x] 3.2 Full backend test suite passes
-- [x] 3.3 No network calls in the test
+- [x] 3.1 New test passes (`--filter FitnessScoringTests`) — 2b8ba17
+- [x] 3.2 Full backend test suite passes — 2b8ba17
+- [x] 3.3 No network calls in the test — 2b8ba17
 
 #### Manual
 
