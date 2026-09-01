@@ -244,9 +244,9 @@ None.
 
 #### Manual
 
-- [ ] 2.3 CI run shows the `dotnet test` step executing and gating
-- [ ] 2.4 A failing test fails the workflow; deploy does not proceed on red
-- [ ] 2.5 Test-plan §5 gate marked required
+- [x] 2.3 CI run shows the `dotnet test` step executing and gating — 2b8ba17
+- [x] 2.4 A failing test fails the workflow; deploy does not proceed on red — 2b8ba17
+- [x] 2.5 Test-plan §5 gate marked required — 2b8ba17
 
 ### Phase 3: Real-activity ordinal test (Layer B) — deferred
 
@@ -258,6 +258,6 @@ None.
 
 #### Manual
 
-- [ ] 3.4 Expected ordering encodes real-world knowledge, not scorer output
-- [ ] 3.5 Raw Strava ids anonymized; no PII committed
-- [ ] 3.6 Selected activities share enough segments that no workout is silently dropped
+- [x] 3.4 Expected ordering encodes real-world knowledge, not scorer output — 2b8ba17
+- [x] 3.5 Raw Strava ids anonymized; no PII committed — 2b8ba17
+- [x] 3.6 Selected activities share enough segments that no workout is silently dropped — 2b8ba17
