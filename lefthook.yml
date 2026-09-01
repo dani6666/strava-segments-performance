@@ -1,0 +1,14 @@
+# Git pre-commit gate. Heavier checks that are too slow for the per-edit agent
+# hooks (.claude/settings.json) live here, running only on staged files.
+#
+# Requires lefthook on PATH (`npm install -g lefthook`) and `lefthook install`
+# to wire .git/hooks. See https://lefthook.dev.
+pre-commit:
+  parallel: true
+  commands:
+    frontend-tests:
+      # Globs are computed from the repo root and ignore `root:`, so the prefix
+      # is included here. Only frontend .ts edits trigger the scoped test run;
+      # if none are staged, the command is skipped.
+      glob: "strava-segments-performance/**/*.ts"
+      run: bash .claude/hooks/precommit-frontend-tests.sh {staged_files}

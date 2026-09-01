@@ -1,4 +1,6 @@
 .github/*
 !.github/workflows
-.claude
+.claude/*
+!.claude/hooks/
+!.claude/settings.json
 .env*
