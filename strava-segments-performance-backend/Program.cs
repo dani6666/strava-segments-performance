@@ -19,6 +19,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var frontendOrigin = builder.Configuration["Frontend:Origin"]!;
 
+// E2E is a local/CI, plain-http environment. Treat it as dev-like for cookie policy: with the
+// non-Development defaults (SameSite=None + Secure=Always) the auth cookie is dropped over
+// http-localhost, so the browser would land on /dashboard and immediately bounce back to /login.
+var isE2E = builder.Environment.IsEnvironment("E2E");
+var useDevLikeCookies = builder.Environment.IsDevelopment() || isE2E;
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
@@ -33,10 +39,10 @@ builder.Services
     .AddCookie(options =>
     {
         options.Cookie.HttpOnly = true;
-        options.Cookie.SameSite = builder.Environment.IsDevelopment()
+        options.Cookie.SameSite = useDevLikeCookies
             ? SameSiteMode.Lax
             : SameSiteMode.None;
-        options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+        options.Cookie.SecurePolicy = useDevLikeCookies
             ? CookieSecurePolicy.SameAsRequest
             : CookieSecurePolicy.Always;
 
@@ -93,6 +99,23 @@ builder.Services
             return Task.CompletedTask;
         };
     });
+
+if (isE2E)
+{
+    // E2E-only: point the Strava OAuth handler at the in-process stub authorize/token/athlete
+    // endpoints (mapped below, also E2E-gated). Everything else about the handler — CallbackPath,
+    // scope, OnCreatingTicket, OnRemoteFailure — is unchanged, so the test drives the real
+    // challenge/callback/backchannel logic against a stub instead of the live Strava.
+    builder.Services.PostConfigure<StravaAuthenticationOptions>(
+        StravaAuthenticationDefaults.AuthenticationScheme,
+        options =>
+        {
+            var stubBase = builder.Configuration["E2E:StubBaseUrl"] ?? "http://localhost:5000";
+            options.AuthorizationEndpoint = $"{stubBase}/e2e-stub/oauth/authorize";
+            options.TokenEndpoint = $"{stubBase}/e2e-stub/oauth/token";
+            options.UserInformationEndpoint = $"{stubBase}/e2e-stub/api/athlete";
+        });
+}
 
 builder.Services.AddSingleton<TokenEncryptionService>();
 builder.Services.AddAuthorization();
@@ -191,6 +214,41 @@ if (app.Environment.IsEnvironment("E2E"))
 
         return Results.Ok(new { stravaAthleteId = athleteId, displayName = name });
     });
+}
+
+if (app.Environment.IsEnvironment("E2E"))
+{
+    // E2E-only stub Strava. Impersonates the authorize/token/athlete endpoints the OAuth handler
+    // was repointed at (see the PostConfigure above), so a browser can complete a full login with
+    // no real Strava. Never mapped outside the E2E environment. The canned athlete below is what
+    // the browser handshake spec asserts against.
+    app.MapGet("/e2e-stub/oauth/authorize", (string redirect_uri, string state) =>
+    {
+        // Bounce straight back to the OAuth callback with a canned code, echoing state unchanged
+        // so the handler's correlation/state validation passes.
+        var separator = redirect_uri.Contains('?') ? '&' : '?';
+        return Results.Redirect(
+            $"{redirect_uri}{separator}code=e2e-auth-code&state={Uri.EscapeDataString(state)}");
+    });
+
+    app.MapPost("/e2e-stub/oauth/token", () => Results.Json(new
+    {
+        token_type = "Bearer",
+        access_token = "e2e-access-token",
+        refresh_token = "e2e-refresh-token",
+        expires_in = 21600,
+        expires_at = DateTimeOffset.UtcNow.AddHours(6).ToUnixTimeSeconds()
+    }));
+
+    // Shape mirrors Strava's /api/v3/athlete — the provider maps id -> NameIdentifier and
+    // firstname -> Name, which OnCreatingTicket reads to upsert the user.
+    app.MapGet("/e2e-stub/api/athlete", () => Results.Json(new
+    {
+        id = 99999L,
+        username = "e2e_rider",
+        firstname = "E2E",
+        lastname = "Rider"
+    }));
 }
 
 static DateTime? NormalizeUtc(DateTime? value) => value switch
