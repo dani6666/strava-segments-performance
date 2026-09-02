@@ -394,27 +394,27 @@ No data migrations. `appsettings.E2E.json` and the `E2E`-gated endpoints are add
 
 #### Automated
 
-- [x] 3.1 Workflow parses and starts on a PR
-- [ ] 3.2 e2e job completes green on a PR branch
-- [ ] 3.3 Intentionally-broken chain fails the job and uploads the Playwright report
+- [x] 3.1 Workflow parses and starts on a PR — 7c1a519
+- [x] 3.2 e2e job completes green on a PR branch — 7c1a519
+- [x] 3.3 Intentionally-broken chain fails the job and uploads the Playwright report — 7c1a519
 
 #### Manual
 
-- [ ] 3.4 e2e job appears as a PR check and passes
-- [ ] 3.5 Run logs show Postgres up, backend `E2E` startup + migration, `chromium-noauth` executed
+- [x] 3.4 e2e job appears as a PR check and passes — 7c1a519
+- [x] 3.5 Run logs show Postgres up, backend `E2E` startup + migration, `chromium-noauth` executed — 7c1a519
 
 ### Phase 4: Backend integration round-trip (scoped to the delta)
 
 #### Automated
 
-- [ ] 4.1 Backend test suite passes incl. new integration + unit tests (`dotnet test`)
-- [ ] 4.2 Forwarded-header test bites (fails if `UseForwardedHeaders()` removed)
-- [ ] 4.3 Suite runs in the existing `backend-ci.yml` `test` job with no workflow change
+- [x] 4.1 Backend test suite passes incl. new integration + unit tests (`dotnet test`)
+- [x] 4.2 Forwarded-header test bites (fails if `UseForwardedHeaders()` removed)
+- [x] 4.3 Suite runs in the existing `backend-ci.yml` `test` job with no workflow change
 
 #### Manual
 
-- [ ] 4.4 `dotnet test` deterministic across repeats with Docker running (Testcontainers)
-- [ ] 4.5 Review confirms integration tests assert only the delta (no happy-path re-test)
+- [x] 4.4 `dotnet test` deterministic across repeats with Docker running (Testcontainers)
+- [x] 4.5 Review confirms integration tests assert only the delta (no happy-path re-test)
 
 ### Phase 5: Deploy-time OAuth redirect smoke
 

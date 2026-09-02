@@ -353,3 +353,6 @@ app.MapGet("/api/analysis/fitness-trend", async (HttpContext ctx, AppDbContext d
 app.Run();
 
 record FetchWorkoutsRequest(DateTime? After, DateTime? Before);
+
+// Exposes the top-level Program to the test project's WebApplicationFactory<Program>.
+public partial class Program { }
