@@ -241,7 +241,7 @@ if (app.Environment.IsEnvironment("E2E"))
     }));
 
     // Shape mirrors Strava's /api/v3/athlete — the provider maps id -> NameIdentifier and
-    // firstname -> Name, which OnCreatingTicket reads to upsert the user.
+    // username -> Name, which OnCreatingTicket reads to upsert the user (DisplayName = username).
     app.MapGet("/e2e-stub/api/athlete", () => Results.Json(new
     {
         id = 99999L,

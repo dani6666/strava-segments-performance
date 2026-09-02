@@ -114,7 +114,7 @@ phase lands; before that, the gate is `planned`.
 | typecheck / compile (`dotnet build`, `tsc` strict) | local + CI | required | type drift, build breakage |
 | unit + integration (`dotnet test`, `npm test`) | local + CI | required | logic regressions |
 | e2e — critical flows (Playwright, stub provider): OAuth redirect chain + date-range→chart happy path | CI on PR (`.github/workflows/e2e-ci.yml`) | OAuth required after §3 Phase 4; chart happy path required after §3 Phase 5 | broken login round-trip and broken composed data→chart slice through the browser |
-| deploy-time OAuth redirect smoke (curl `/api/auth/login`, assert `Location` is `https://…/auth/callback`) | post-deploy (CD or manual) | required after §3 Phase 4 | prod-only `redirect_uri`/forwarded-proto misconfig no offline test can catch |
+| deploy-time OAuth redirect smoke (curl `/auth/login`, assert `Location` is `https://…/auth/callback`) | post-deploy (CD or manual) | required after §3 Phase 4 | prod-only `redirect_uri`/forwarded-proto misconfig no offline test can catch |
 | post-edit hook | local (agent loop) | optional | regressions at edit time |
 | multimodal visual review | CI on PR | optional (not planned — see §7) | visual issues classic diff misses |
 
@@ -149,7 +149,7 @@ the relevant rollout phase ships; before that, the sub-section reads
 - TBD — see §3 Phase 4. Three layers to fill in when the phase ships:
   1. **Integration round-trip** (`WebApplicationFactory` + a stub authorize/token server): assert the login challenge's `redirect_uri`/scope/state, that `/auth/callback` is handled, code→ticket→cookie→302 to `/dashboard`, and the failed-exchange 302 to `/login?error=auth_failed`; plus per-environment cookie policy and the 401-vs-redirect branch.
   2. **Browser e2e** (Playwright, stub provider via `page.route` — never real Strava): the redirect chain completes through Angular and lands authenticated on `/dashboard`.
-  3. **Deploy smoke** (curl `/api/auth/login`, assert the 302 `Location` scheme+host+path).
+  3. **Deploy smoke** (curl `/auth/login`, assert the 302 `Location` scheme+host+path).
 
 - **Auth seam for *other* e2e tests (`/auth/test-login`).** Tests that need an authenticated session but do **not** test login (Phase 5 chart happy path, the seed) must not drive the OAuth handshake — `page.route` cannot stub the server-side code→token exchange (the backend, not the browser, calls Strava's token endpoint). Instead the backend exposes `GET /auth/test-login?athleteId&name`, **gated to `ASPNETCORE_ENVIRONMENT=E2E`** (not mapped in Development/Production), which upserts the user and `SignInAsync`s a real cookie session — no Strava. Playwright's `setup` project calls it once and saves `storageState` (`playwright/.auth/user.json`, gitignored, regenerated every run); the `chromium` project reuses it via `dependencies: ['setup']`. This keeps the never-real-Strava rule while giving authenticated tests a genuine backend session (real `/api/*`, not a stubbed `/api/auth/me`). The **Phase 4 handshake test itself** must NOT use this seam — it starts unauthenticated and exercises the real challenge→callback→cookie→redirect chain.
 
