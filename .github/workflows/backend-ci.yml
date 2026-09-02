@@ -85,6 +85,7 @@ jobs:
             ConnectionStrings__DefaultConnection="$CONNECTION_STRING" \
             ASPNETCORE_ENVIRONMENT="Production" \
             ASPNETCORE_URLS="http://+:8080" \
+            BUILD_SHA="${{ github.sha }}" \
             --project $RAILWAY_PROJECT_ID \
             --environment $RAILWAY_ENVIRONMENT_ID \
             --service backend
@@ -99,3 +100,10 @@ jobs:
           railway redeploy --project $RAILWAY_PROJECT_ID \
             --environment $RAILWAY_ENVIRONMENT_ID \
             --service backend --yes
+
+      - name: OAuth redirect smoke (post-deploy)
+        if: github.ref == 'refs/heads/master'
+        run: |
+          scripts/oauth-redirect-smoke.sh \
+            https://frontend-production-2e86.up.railway.app \
+            "${{ github.sha }}"

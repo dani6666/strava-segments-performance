@@ -4,3 +4,5 @@
 !.claude/hooks/
 !.claude/settings.json
 .env*
+playwright
+.playwright-cli

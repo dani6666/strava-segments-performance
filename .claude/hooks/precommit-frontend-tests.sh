@@ -12,6 +12,7 @@ includes=()
 for f in "$@"; do
   f=${f//\\//}                          # normalize Windows backslashes
   case "$f" in
+    "$ROOT"/e2e/*) ;;                    # Playwright specs -> npx playwright test, not ng test
     "$ROOT"/*.ts) includes+=( "--include" "${f#"$ROOT"/}" ) ;;
   esac
 done
