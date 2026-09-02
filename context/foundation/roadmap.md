@@ -3,7 +3,7 @@ project: "Strava Segments Performance"
 version: 1
 status: draft
 created: 2026-06-10
-updated: 2026-08-31
+updated: 2026-09-02
 prd_version: 1
 main_goal: speed
 top_blocker: external
@@ -122,6 +122,7 @@ None carried from PRD. The primary external risk (Strava API access and rate lim
 
 ## Done
 
+- **S-01: user can authenticate via Strava OAuth and land on an authenticated UI** — Archived 2026-09-02 → `context/archive/2026-06-13-strava-oauth-login/`. Lesson: —.
 - **S-02: user can trigger workout fetching from Strava, see progress as data loads, and have fetched workouts cached for reuse** — Archived 2026-08-26 → `context/archive/2026-07-10-workout-data-fetch/`. Lesson: —.
 - **S-03: user can see a fitness trend chart showing a 0-100 score per workout, computed from segment elapsed time + average heart rate against personal history** — Archived 2026-08-31 → `context/archive/2026-08-27-fitness-trend-chart/`. Lesson: —.
 - **S-04: user can select a timeframe to narrow the analysis window instead of analyzing all workouts** — Archived 2026-08-31 → `context/archive/2026-08-27-timeframe-selection/`. Lesson: —.
