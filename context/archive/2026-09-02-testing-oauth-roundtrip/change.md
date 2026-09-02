@@ -1,10 +1,10 @@
 ---
 change_id: testing-oauth-roundtrip
 title: Testing oauth roundtrip
-status: impl_reviewed
+status: archived
 created: 2026-09-02
 updated: 2026-09-03
-archived_at: null
+archived_at: 2026-09-02T23:05:29Z
 ---
 
 ## Notes
