@@ -1,0 +1,85 @@
+name: E2E CI
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "strava-segments-performance/**"
+      - "strava-segments-performance-backend/**"
+      - ".github/workflows/e2e-ci.yml"
+  pull_request:
+    branches: [master]
+    paths:
+      - "strava-segments-performance/**"
+      - "strava-segments-performance-backend/**"
+      - ".github/workflows/e2e-ci.yml"
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    # Throwaway Postgres for the E2E backend. Credentials are CI-only test values (not secrets);
+    # the DB is pre-created so EF just applies migrations at backend startup.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: strava_user
+          POSTGRES_PASSWORD: strava_ci_password
+          POSTGRES_DB: strava_segments_e2e
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      # playwright.config.ts priority 1 — points the E2E backend at the service above.
+      # In CI there is no .env, so this override is what the backend connects with.
+      E2E_DB_CONNECTION: "Host=localhost;Port=5432;Database=strava_segments_e2e;Username=strava_user;Password=strava_ci_password"
+
+    defaults:
+      run:
+        working-directory: strava-segments-performance
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # Warm the backend build so Playwright's `dotnet run` webServer starts within its timeout.
+      - name: Build backend
+        working-directory: strava-segments-performance-backend
+        run: dotnet build --configuration Debug
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      # CI=true disables reuseExistingServer, so Playwright boots ng serve + the E2E backend
+      # (ASPNETCORE_ENVIRONMENT=E2E via playwright.config.ts) itself.
+      - name: Run E2E tests
+        env:
+          CI: "true"
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: strava-segments-performance/playwright-report/
+          retention-days: 7

@@ -113,7 +113,7 @@ phase lands; before that, the gate is `planned`.
 | lint + format (`dotnet format`, `prettier`) | local + CI | recommended | syntactic / style drift |
 | typecheck / compile (`dotnet build`, `tsc` strict) | local + CI | required | type drift, build breakage |
 | unit + integration (`dotnet test`, `npm test`) | local + CI | required | logic regressions |
-| e2e — critical flows (Playwright, stub provider): OAuth redirect chain + date-range→chart happy path | CI on PR | OAuth required after §3 Phase 4; chart happy path required after §3 Phase 5 | broken login round-trip and broken composed data→chart slice through the browser |
+| e2e — critical flows (Playwright, stub provider): OAuth redirect chain + date-range→chart happy path | CI on PR (`.github/workflows/e2e-ci.yml`) | OAuth required after §3 Phase 4; chart happy path required after §3 Phase 5 | broken login round-trip and broken composed data→chart slice through the browser |
 | deploy-time OAuth redirect smoke (curl `/api/auth/login`, assert `Location` is `https://…/auth/callback`) | post-deploy (CD or manual) | required after §3 Phase 4 | prod-only `redirect_uri`/forwarded-proto misconfig no offline test can catch |
 | post-edit hook | local (agent loop) | optional | regressions at edit time |
 | multimodal visual review | CI on PR | optional (not planned — see §7) | visual issues classic diff misses |

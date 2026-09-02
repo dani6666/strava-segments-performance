@@ -381,20 +381,20 @@ No data migrations. `appsettings.E2E.json` and the `E2E`-gated endpoints are add
 
 #### Automated
 
-- [x] 2.1 Playwright browsers install (`npx playwright install --with-deps chromium`)
-- [x] 2.2 Full e2e suite passes locally (`npm run test:e2e`)
-- [x] 2.3 Handshake spec runs in a no-`storageState` project (`--project=chromium-noauth`)
+- [x] 2.1 Playwright browsers install (`npx playwright install --with-deps chromium`) — 28cd2e5
+- [x] 2.2 Full e2e suite passes locally (`npm run test:e2e`) — 28cd2e5
+- [x] 2.3 Handshake spec runs in a no-`storageState` project (`--project=chromium-noauth`) — 28cd2e5
 
 #### Manual
 
-- [x] 2.4 Headed run completes the visible login chain to `/dashboard`
-- [x] 2.5 Suite passes on two consecutive runs (idempotent)
+- [x] 2.4 Headed run completes the visible login chain to `/dashboard` — 28cd2e5
+- [x] 2.5 Suite passes on two consecutive runs (idempotent) — 28cd2e5
 
 ### Phase 3: e2e CI/CD job
 
 #### Automated
 
-- [ ] 3.1 Workflow parses and starts on a PR
+- [x] 3.1 Workflow parses and starts on a PR
 - [ ] 3.2 e2e job completes green on a PR branch
 - [ ] 3.3 Intentionally-broken chain fails the job and uploads the Playwright report
 
