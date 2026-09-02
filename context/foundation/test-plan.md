@@ -151,6 +151,8 @@ the relevant rollout phase ships; before that, the sub-section reads
   2. **Browser e2e** (Playwright, stub provider via `page.route` — never real Strava): the redirect chain completes through Angular and lands authenticated on `/dashboard`.
   3. **Deploy smoke** (curl `/api/auth/login`, assert the 302 `Location` scheme+host+path).
 
+- **Auth seam for *other* e2e tests (`/auth/test-login`).** Tests that need an authenticated session but do **not** test login (Phase 5 chart happy path, the seed) must not drive the OAuth handshake — `page.route` cannot stub the server-side code→token exchange (the backend, not the browser, calls Strava's token endpoint). Instead the backend exposes `GET /auth/test-login?athleteId&name`, **gated to `ASPNETCORE_ENVIRONMENT=E2E`** (not mapped in Development/Production), which upserts the user and `SignInAsync`s a real cookie session — no Strava. Playwright's `setup` project calls it once and saves `storageState` (`playwright/.auth/user.json`, gitignored, regenerated every run); the `chromium` project reuses it via `dependencies: ['setup']`. This keeps the never-real-Strava rule while giving authenticated tests a genuine backend session (real `/api/*`, not a stubbed `/api/auth/me`). The **Phase 4 handshake test itself** must NOT use this seam — it starts unauthenticated and exercises the real challenge→callback→cookie→redirect chain.
+
 ### 6.5 Adding a frontend chart test (component + vertical-slice e2e)
 
 Two layers, now split across two phases:

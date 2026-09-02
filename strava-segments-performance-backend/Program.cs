@@ -163,6 +163,36 @@ app.MapPost("/api/auth/logout", async (HttpContext ctx) =>
     return Results.Ok();
 });
 
+if (app.Environment.IsEnvironment("E2E"))
+{
+    // E2E-only auth seam. Mints a real cookie session WITHOUT Strava OAuth so the
+    // Playwright setup project (frontend e2e/auth.setup.ts) can save a genuine
+    // storageState. Gated to the E2E environment — this endpoint is not mapped in
+    // Development or Production. Never run the app with ASPNETCORE_ENVIRONMENT=E2E
+    // in production: it would let anyone sign in as any athlete.
+    app.MapGet("/auth/test-login", async (HttpContext ctx, AppDbContext db, long athleteId, string name) =>
+    {
+        var user = await db.Users.FirstOrDefaultAsync(u => u.StravaAthleteId == athleteId);
+        if (user is null)
+        {
+            user = new User { StravaAthleteId = athleteId };
+            db.Users.Add(user);
+        }
+        user.DisplayName = name;
+        await db.SaveChangesAsync();
+
+        var identity = new ClaimsIdentity(
+            [
+                new Claim(ClaimTypes.NameIdentifier, athleteId.ToString()),
+                new Claim(ClaimTypes.Name, name)
+            ],
+            CookieAuthenticationDefaults.AuthenticationScheme);
+        await ctx.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+        return Results.Ok(new { stravaAthleteId = athleteId, displayName = name });
+    });
+}
+
 static DateTime? NormalizeUtc(DateTime? value) => value switch
 {
     null => null,
