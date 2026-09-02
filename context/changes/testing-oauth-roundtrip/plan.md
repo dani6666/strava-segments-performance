@@ -367,28 +367,28 @@ No data migrations. `appsettings.E2E.json` and the `E2E`-gated endpoints are add
 
 #### Automated
 
-- [x] 1.1 Backend builds (`dotnet build`)
-- [x] 1.2 Backend unit tests still pass (`dotnet test`)
-- [x] 1.3 Stub endpoints + PostConfigure confined to the `IsEnvironment("E2E")` guard (grep)
+- [x] 1.1 Backend builds (`dotnet build`) — 5aa8007
+- [x] 1.2 Backend unit tests still pass (`dotnet test`) — 5aa8007
+- [x] 1.3 Stub endpoints + PostConfigure confined to the `IsEnvironment("E2E")` guard (grep) — 5aa8007
 
 #### Manual
 
-- [x] 1.4 Full login through a browser against a local `E2E` backend lands authenticated on `/dashboard`
-- [x] 1.5 `/dashboard` stays authenticated on reload (E2E cookie-policy fix works)
-- [x] 1.6 No `/e2e-stub/*` route exposed in Development/Production
+- [x] 1.4 Full login through a browser against a local `E2E` backend lands authenticated on `/dashboard` — 5aa8007
+- [x] 1.5 `/dashboard` stays authenticated on reload (E2E cookie-policy fix works) — 5aa8007
+- [x] 1.6 No `/e2e-stub/*` route exposed in Development/Production — 5aa8007
 
 ### Phase 2: Playwright runner + browser OAuth handshake spec
 
 #### Automated
 
-- [ ] 2.1 Playwright browsers install (`npx playwright install --with-deps chromium`)
-- [ ] 2.2 Full e2e suite passes locally (`npm run test:e2e`)
-- [ ] 2.3 Handshake spec runs in a no-`storageState` project (`--project=chromium-noauth`)
+- [x] 2.1 Playwright browsers install (`npx playwright install --with-deps chromium`)
+- [x] 2.2 Full e2e suite passes locally (`npm run test:e2e`)
+- [x] 2.3 Handshake spec runs in a no-`storageState` project (`--project=chromium-noauth`)
 
 #### Manual
 
-- [ ] 2.4 Headed run completes the visible login chain to `/dashboard`
-- [ ] 2.5 Suite passes on two consecutive runs (idempotent)
+- [x] 2.4 Headed run completes the visible login chain to `/dashboard`
+- [x] 2.5 Suite passes on two consecutive runs (idempotent)
 
 ### Phase 3: e2e CI/CD job
 
