@@ -420,9 +420,9 @@ No data migrations. `appsettings.E2E.json` and the `E2E`-gated endpoints are add
 
 #### Automated
 
-- [x] 5.1 `/health` returns `BUILD_SHA` locally (and `"unknown"` when unset, no throw)
-- [x] 5.2 Smoke script exits 0 on a valid `https://<host>/auth/callback` redirect_uri and non-zero on http/wrong-host
-- [x] 5.3 `backend-ci.yml` parses and the smoke step is gated to `master`
+- [x] 5.1 `/health` returns `BUILD_SHA` locally (and `"unknown"` when unset, no throw) — acdd169
+- [x] 5.2 Smoke script exits 0 on a valid `https://<host>/auth/callback` redirect_uri and non-zero on http/wrong-host — acdd169
+- [x] 5.3 `backend-ci.yml` parses and the smoke step is gated to `master` — acdd169
 
 #### Manual
 
