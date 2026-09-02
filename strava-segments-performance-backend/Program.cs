@@ -231,14 +231,8 @@ if (app.Environment.IsEnvironment("E2E"))
             $"{redirect_uri}{separator}code=e2e-auth-code&state={Uri.EscapeDataString(state)}");
     });
 
-    app.MapPost("/e2e-stub/oauth/token", () => Results.Json(new
-    {
-        token_type = "Bearer",
-        access_token = "e2e-access-token",
-        refresh_token = "e2e-refresh-token",
-        expires_in = 21600,
-        expires_at = DateTimeOffset.UtcNow.AddHours(6).ToUnixTimeSeconds()
-    }));
+    // TEMP DELIBERATE BREAK — verifying the e2e CI job goes red. REVERT before merge.
+    app.MapPost("/e2e-stub/oauth/token", () => Results.StatusCode(400));
 
     // Shape mirrors Strava's /api/v3/athlete — the provider maps id -> NameIdentifier and
     // firstname -> Name, which OnCreatingTicket reads to upsert the user.
