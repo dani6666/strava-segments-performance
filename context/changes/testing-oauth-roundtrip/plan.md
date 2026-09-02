@@ -407,22 +407,22 @@ No data migrations. `appsettings.E2E.json` and the `E2E`-gated endpoints are add
 
 #### Automated
 
-- [x] 4.1 Backend test suite passes incl. new integration + unit tests (`dotnet test`)
-- [x] 4.2 Forwarded-header test bites (fails if `UseForwardedHeaders()` removed)
-- [x] 4.3 Suite runs in the existing `backend-ci.yml` `test` job with no workflow change
+- [x] 4.1 Backend test suite passes incl. new integration + unit tests (`dotnet test`) — bcacd6b
+- [x] 4.2 Forwarded-header test bites (fails if `UseForwardedHeaders()` removed) — bcacd6b
+- [x] 4.3 Suite runs in the existing `backend-ci.yml` `test` job with no workflow change — bcacd6b
 
 #### Manual
 
-- [x] 4.4 `dotnet test` deterministic across repeats with Docker running (Testcontainers)
-- [x] 4.5 Review confirms integration tests assert only the delta (no happy-path re-test)
+- [x] 4.4 `dotnet test` deterministic across repeats with Docker running (Testcontainers) — bcacd6b
+- [x] 4.5 Review confirms integration tests assert only the delta (no happy-path re-test) — bcacd6b
 
 ### Phase 5: Deploy-time OAuth redirect smoke
 
 #### Automated
 
-- [ ] 5.1 `/health` returns `BUILD_SHA` locally (and `"unknown"` when unset, no throw)
-- [ ] 5.2 Smoke script exits 0 on a valid `https://<host>/auth/callback` redirect_uri and non-zero on http/wrong-host
-- [ ] 5.3 `backend-ci.yml` parses and the smoke step is gated to `master`
+- [x] 5.1 `/health` returns `BUILD_SHA` locally (and `"unknown"` when unset, no throw)
+- [x] 5.2 Smoke script exits 0 on a valid `https://<host>/auth/callback` redirect_uri and non-zero on http/wrong-host
+- [x] 5.3 `backend-ci.yml` parses and the smoke step is gated to `master`
 
 #### Manual
 

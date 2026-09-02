@@ -157,7 +157,7 @@ app.UseCors("Frontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/health", () => Results.Ok(new { status = "healthy" }))
+app.MapGet("/health", () => Results.Ok(new { status = "healthy", sha = builder.Configuration["BUILD_SHA"] ?? "unknown" }))
    .WithName("HealthCheck");
 
 app.MapGet("/auth/login", (HttpContext ctx, string? returnUrl) =>
