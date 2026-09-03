@@ -214,6 +214,114 @@ if (app.Environment.IsEnvironment("E2E"))
 
         return Results.Ok(new { stravaAthleteId = athleteId, displayName = name });
     });
+
+    // E2E-only seed/reset surface. Populates and clears the fitness-trend inputs for the
+    // authenticated user so Playwright can assert against a deterministic fixture and clean
+    // up after itself. Wipe-and-insert on every seed call keeps re-runs idempotent against
+    // the persistent local E2E DB.
+    app.MapPost("/e2e/seed", async (HttpContext ctx, AppDbContext db) =>
+    {
+        var stravaId = long.Parse(ctx.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var user = await db.Users.FirstAsync(u => u.StravaAthleteId == stravaId);
+
+        await using var tx = await db.Database.BeginTransactionAsync();
+
+        await db.SegmentEfforts
+            .Where(e => db.Activities.Any(a => a.Id == e.ActivityId && a.UserId == user.Id))
+            .ExecuteDeleteAsync();
+        await db.Activities.Where(a => a.UserId == user.Id).ExecuteDeleteAsync();
+        await db.WorkoutFetchStatuses.Where(s => s.UserId == user.Id).ExecuteDeleteAsync();
+
+        var activity1 = new Activity
+        {
+            UserId = user.Id,
+            StravaActivityId = 9000001,
+            Name = "E2E Ride 1",
+            SportType = "Ride",
+            StartDateUtc = new DateTime(2026, 8, 15, 10, 0, 0, DateTimeKind.Utc),
+            DistanceMeters = 20000,
+            MovingTimeSeconds = 3600,
+            ElapsedTimeSeconds = 3600,
+            DetailsFetched = true,
+            FetchedAtUtc = DateTime.UtcNow
+        };
+        var activity2 = new Activity
+        {
+            UserId = user.Id,
+            StravaActivityId = 9000002,
+            Name = "E2E Ride 2",
+            SportType = "Ride",
+            StartDateUtc = new DateTime(2026, 8, 22, 10, 0, 0, DateTimeKind.Utc),
+            DistanceMeters = 20000,
+            MovingTimeSeconds = 3600,
+            ElapsedTimeSeconds = 3600,
+            DetailsFetched = true,
+            FetchedAtUtc = DateTime.UtcNow
+        };
+        db.Activities.AddRange(activity1, activity2);
+        await db.SaveChangesAsync();
+
+        long nextEffortId = 9100001;
+        var segmentIds = new long[] { 10, 11, 12 };
+        var efforts = new List<SegmentEffort>();
+        foreach (var segmentId in segmentIds)
+        {
+            efforts.Add(new SegmentEffort
+            {
+                ActivityId = activity1.Id,
+                StravaSegmentEffortId = nextEffortId++,
+                StravaSegmentId = segmentId,
+                SegmentName = $"E2E Segment {segmentId}",
+                ElapsedTimeSeconds = 200,
+                AverageHeartRate = 160,
+                StartDateUtc = activity1.StartDateUtc
+            });
+            efforts.Add(new SegmentEffort
+            {
+                ActivityId = activity2.Id,
+                StravaSegmentEffortId = nextEffortId++,
+                StravaSegmentId = segmentId,
+                SegmentName = $"E2E Segment {segmentId}",
+                ElapsedTimeSeconds = 100,
+                AverageHeartRate = 140,
+                StartDateUtc = activity2.StartDateUtc
+            });
+        }
+        db.SegmentEfforts.AddRange(efforts);
+
+        db.WorkoutFetchStatuses.Add(new WorkoutFetchStatus
+        {
+            UserId = user.Id,
+            Status = FetchStatusState.Completed,
+            ActivitiesProcessed = 2,
+            TotalToProcess = 2,
+            StartedAtUtc = new DateTime(2026, 8, 1, 0, 0, 0, DateTimeKind.Utc),
+            CompletedAtUtc = new DateTime(2026, 8, 31, 23, 59, 59, DateTimeKind.Utc)
+        });
+
+        await db.SaveChangesAsync();
+        await tx.CommitAsync();
+
+        return Results.Ok(new { userId = user.Id, activities = 2, efforts = 6 });
+    }).RequireAuthorization();
+
+    app.MapPost("/e2e/reset", async (HttpContext ctx, AppDbContext db) =>
+    {
+        var stravaId = long.Parse(ctx.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var user = await db.Users.FirstAsync(u => u.StravaAthleteId == stravaId);
+
+        await using var tx = await db.Database.BeginTransactionAsync();
+
+        await db.SegmentEfforts
+            .Where(e => db.Activities.Any(a => a.Id == e.ActivityId && a.UserId == user.Id))
+            .ExecuteDeleteAsync();
+        await db.Activities.Where(a => a.UserId == user.Id).ExecuteDeleteAsync();
+        await db.WorkoutFetchStatuses.Where(s => s.UserId == user.Id).ExecuteDeleteAsync();
+
+        await tx.CommitAsync();
+
+        return Results.Ok(new { userId = user.Id, deleted = true });
+    }).RequireAuthorization();
 }
 
 if (app.Environment.IsEnvironment("E2E"))
