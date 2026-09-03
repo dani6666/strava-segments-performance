@@ -285,12 +285,12 @@ Extend the existing `auth.setup.ts` to seed after login, add a `globalTeardown` 
 
 #### Automated
 
-- [x] 3.1 `npm run test:e2e` in `strava-segments-performance/` passes locally (all specs, including the new one and the existing OAuth handshake).
+- [x] 3.1 `npm run test:e2e` in `strava-segments-performance/` passes locally (all specs, including the new one and the existing OAuth handshake). — e382f73
 - [ ] 3.2 CI job `e2e` in `.github/workflows/e2e-ci.yml` passes on the branch PR.
-- [x] 3.3 The Playwright report shows the new spec's two response waits succeeded.
+- [x] 3.3 The Playwright report shows the new spec's two response waits succeeded. — e382f73
 
 #### Manual
 
-- [x] 3.4 Re-run `npm run test:e2e` twice back-to-back against the local `strava_segments_e2e` DB — both runs pass, confirming the teardown cleaned up.
-- [x] 3.5 Inspect the Playwright HTML report (locally: `npx playwright show-report`) for the new spec — the assertions on point count and canvas visibility appear.
-- [x] 3.6 Force a fixture-shape mismatch (e.g., temporarily change Phase 1's seed to insert 3 activities and run the spec unchanged) — the spec fails on the point-count assertion, confirming the assertion is real.
+- [x] 3.4 Re-run `npm run test:e2e` twice back-to-back against the local `strava_segments_e2e` DB — both runs pass, confirming the teardown cleaned up. — e382f73
+- [x] 3.5 Inspect the Playwright HTML report (locally: `npx playwright show-report`) for the new spec — the assertions on point count and canvas visibility appear. — e382f73
+- [x] 3.6 Force a fixture-shape mismatch (e.g., temporarily change Phase 1's seed to insert 3 activities and run the spec unchanged) — the spec fails on the point-count assertion, confirming the assertion is real. — e382f73

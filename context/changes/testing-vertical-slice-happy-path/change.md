@@ -1,7 +1,7 @@
 ---
 change_id: testing-vertical-slice-happy-path
 title: Testing vertical slice happy path
-status: implementing
+status: implemented
 created: 2026-09-03
 updated: 2026-09-03
 
