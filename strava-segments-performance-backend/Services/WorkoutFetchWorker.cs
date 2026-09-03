@@ -109,7 +109,7 @@ public class WorkoutFetchWorker : BackgroundService
         foreach (var activity in pending)
         {
             var detail = await stravaClient.GetActivityDetailAsync(user, activity.StravaActivityId, ct);
-            db.SegmentEfforts.AddRange(detail.ToSegmentEfforts(activity.Id));
+            db.SegmentEfforts.AddRange(detail.ToSegmentEfforts(pending[0].activityId));
             activity.DetailsFetched = true;
 
             status.ActivitiesProcessed++;

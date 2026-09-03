@@ -1,11 +1,11 @@
 ---
 change_id: testing-vertical-slice-happy-path
 title: Testing vertical slice happy path
-status: impl_reviewed
+status: archived
 created: 2026-09-03
 updated: 2026-09-03
 
-archived_at: null
+archived_at: 2026-09-03T20:53:41Z
 ---
 
 ## Notes
