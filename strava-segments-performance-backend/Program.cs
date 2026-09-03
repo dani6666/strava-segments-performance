@@ -347,10 +347,7 @@ if (app.Environment.IsEnvironment("E2E"))
 
         return Results.Ok(new { userId = user.Id, deleted = true });
     }).RequireAuthorization();
-}
 
-if (app.Environment.IsEnvironment("E2E"))
-{
     // E2E-only stub Strava. Impersonates the authorize/token/athlete endpoints the OAuth handler
     // was repointed at (see the PostConfigure above), so a browser can complete a full login with
     // no real Strava. Never mapped outside the E2E environment. The canned athlete below is what

@@ -175,7 +175,7 @@ Extend the existing `auth.setup.ts` to seed after login, add a `globalTeardown` 
 
 **Contract**:
 - New file: `strava-segments-performance/e2e/global-teardown.ts` exporting a default async function.
-- Inside: use Playwright's `request.newContext({ baseURL: process.env.E2E_API_BASE_URL ?? 'http://localhost:5000' })`, `POST /auth/test-login?athleteId=12345&name=Test Rider` (produces a cookie in the request context), then `POST /e2e/reset`. Log the outcome; do not throw on non-200 (a failed teardown must not mask test failures).
+- Inside: use Playwright's `request.newContext({ baseURL: process.env.E2E_API_BASE_URL ?? 'http://localhost:5000' })`, `GET /auth/test-login?athleteId=12345&name=Test Rider` (produces a cookie in the request context), then `POST /e2e/reset`. Log the outcome; do not throw on non-200 (a failed teardown must not mask test failures).
 - Config addition: one line `globalTeardown: './e2e/global-teardown.ts',` at the top level of `defineConfig({...})`.
 
 #### 3. Write the vertical-slice spec

@@ -1,4 +1,4 @@
-import { Component, OnInit, effect, computed, untracked } from '@angular/core';
+import { Component, OnInit, OnDestroy, effect, computed, untracked } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import {
   FetchStatusValue,
@@ -18,7 +18,7 @@ const ANALYSIS_RETRIGGER_DEBOUNCE_MS = 300;
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   private previousFetchStatus: FetchStatusValue | null = null;
   private analysisRetriggerTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
@@ -74,6 +74,13 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.fetchService.checkStatus();
+  }
+
+  ngOnDestroy() {
+    if (this.analysisRetriggerTimeoutId !== null) {
+      clearTimeout(this.analysisRetriggerTimeoutId);
+      this.analysisRetriggerTimeoutId = null;
+    }
   }
 
   trigger() {
