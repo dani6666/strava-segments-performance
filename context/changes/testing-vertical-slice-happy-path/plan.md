@@ -270,27 +270,27 @@ Extend the existing `auth.setup.ts` to seed after login, add a `globalTeardown` 
 
 #### Automated
 
-- [x] 2.1 Frontend builds: `npm run build` in `strava-segments-performance/`
-- [x] 2.2 Type check clean: implicit in the build
-- [x] 2.3 Unit tests pass: `npm test` in `strava-segments-performance/`
-- [x] 2.4 Lint passes: `npm run lint` if such a script exists; otherwise `prettier --check` per repo convention
+- [x] 2.1 Frontend builds: `npm run build` in `strava-segments-performance/` — 7e7b8a2
+- [x] 2.2 Type check clean: implicit in the build — 7e7b8a2
+- [x] 2.3 Unit tests pass: `npm test` in `strava-segments-performance/` — 7e7b8a2
+- [x] 2.4 Lint passes: `npm run lint` if such a script exists; otherwise `prettier --check` per repo convention — 7e7b8a2
 
 #### Manual
 
-- [x] 2.5 With backend under `E2E` env and seed populated, on `/dashboard` the chart mounts with 2 points, then narrowing the `To` field to `2026-08-15` causes the chart to re-render with 1 point (network tab shows a `GET /api/analysis/fitness-trend?from=...&to=...` call).
-- [x] 2.6 Clearing both picker fields returns the chart to 2 points.
-- [x] 2.7 No console errors on debounced re-trigger.
+- [x] 2.5 With backend under `E2E` env and seed populated, on `/dashboard` the chart mounts with 2 points, then narrowing the `To` field to `2026-08-15` causes the chart to re-render with 1 point (network tab shows a `GET /api/analysis/fitness-trend?from=...&to=...` call). — 7e7b8a2
+- [x] 2.6 Clearing both picker fields returns the chart to 2 points. — 7e7b8a2
+- [x] 2.7 No console errors on debounced re-trigger. — 7e7b8a2
 
 ### Phase 3: Playwright setup, teardown, and vertical-slice spec
 
 #### Automated
 
-- [ ] 3.1 `npm run test:e2e` in `strava-segments-performance/` passes locally (all specs, including the new one and the existing OAuth handshake).
+- [x] 3.1 `npm run test:e2e` in `strava-segments-performance/` passes locally (all specs, including the new one and the existing OAuth handshake).
 - [ ] 3.2 CI job `e2e` in `.github/workflows/e2e-ci.yml` passes on the branch PR.
-- [ ] 3.3 The Playwright report shows the new spec's two response waits succeeded.
+- [x] 3.3 The Playwright report shows the new spec's two response waits succeeded.
 
 #### Manual
 
-- [ ] 3.4 Re-run `npm run test:e2e` twice back-to-back against the local `strava_segments_e2e` DB — both runs pass, confirming the teardown cleaned up.
-- [ ] 3.5 Inspect the Playwright HTML report (locally: `npx playwright show-report`) for the new spec — the assertions on point count and canvas visibility appear.
-- [ ] 3.6 Force a fixture-shape mismatch (e.g., temporarily change Phase 1's seed to insert 3 activities and run the spec unchanged) — the spec fails on the point-count assertion, confirming the assertion is real.
+- [x] 3.4 Re-run `npm run test:e2e` twice back-to-back against the local `strava_segments_e2e` DB — both runs pass, confirming the teardown cleaned up.
+- [x] 3.5 Inspect the Playwright HTML report (locally: `npx playwright show-report`) for the new spec — the assertions on point count and canvas visibility appear.
+- [x] 3.6 Force a fixture-shape mismatch (e.g., temporarily change Phase 1's seed to insert 3 activities and run the spec unchanged) — the spec fails on the point-count assertion, confirming the assertion is real.

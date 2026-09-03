@@ -24,7 +24,7 @@ services:
       context: ./strava-segments-performance-backend
       dockerfile: Dockerfile
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: E2E
       ASPNETCORE_URLS: http://+:5000
       ConnectionStrings__DefaultConnection: >-
         Host=postgres;Port=5432;Database=strava_segments;

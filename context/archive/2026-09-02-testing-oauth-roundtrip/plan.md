@@ -426,6 +426,6 @@ No data migrations. `appsettings.E2E.json` and the `E2E`-gated endpoints are add
 
 #### Manual
 
-- [ ] 5.4 Real master deploy: smoke polls for the new SHA, then asserts the live redirect_uri is `https://frontend-production-2e86.up.railway.app/auth/callback`
-- [ ] 5.5 `https://<frontend-origin>/health` is reachable through nginx and returns the deployed SHA
-- [ ] 5.6 A forced misconfig in a throwaway/preview env makes the smoke fail (gate bites)
+- [x] 5.4 Real master deploy: smoke polls for the new SHA, then asserts the live redirect_uri is `https://frontend-production-2e86.up.railway.app/auth/callback` — verified via GitHub Actions run 33760072676 (master `2e216ac`), "OAuth redirect smoke (post-deploy)" step passed
+- [x] 5.5 `https://<frontend-origin>/health` is reachable through nginx and returns the deployed SHA — same run: the smoke script's `/health` poll matched the deployed SHA before asserting the redirect
+- [x] 5.6 A forced misconfig in a throwaway/preview env makes the smoke fail (gate bites) — verified 2026-09-03 locally: backend run direct (no `X-Forwarded-Proto`) against a throwaway local Postgres produced `redirect_uri=http://localhost:5099/auth/callback`; `oauth-redirect-smoke.sh` correctly failed with "insecure http scheme"; a positive control with `X-Forwarded-Proto: https` confirmed the same instance yields `https://` and passes
