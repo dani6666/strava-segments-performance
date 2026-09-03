@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using StravaSegmentsPerformanceBackend.Data;
 using StravaSegmentsPerformanceBackend.Models;
 using StravaSegmentsPerformanceBackend.Services;
@@ -13,7 +14,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+// Explicit connect/command timeouts so a locked/unreachable DB fails fast on startup
+// instead of blocking Kestrel from ever binding its port (nginx then reports "timed
+// out while connecting to upstream" for as long as the connection/command hangs).
+var connectionStringBuilder = new NpgsqlConnectionStringBuilder(builder.Configuration.GetConnectionString("DefaultConnection")!)
+{
+    Timeout = 15,
+    CommandTimeout = 30
+};
+var connectionString = connectionStringBuilder.ConnectionString;
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
@@ -140,12 +149,17 @@ app.UseForwardedHeaders();
 
 using (var scope = app.Services.CreateScope())
 {
+    // Hard ceiling on the whole startup migration step: a lock wait can chain several
+    // per-command timeouts back to back, so cap wall-clock time too and crash/restart
+    // rather than leave Kestrel never listening.
+    using var migrationCts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await db.Database.MigrateAsync();
+    await db.Database.MigrateAsync(migrationCts.Token);
 
     await db.WorkoutFetchStatuses
         .Where(s => s.Status == FetchStatusState.Running || s.Status == FetchStatusState.Pending)
-        .ExecuteUpdateAsync(setters => setters.SetProperty(s => s.Status, FetchStatusState.Interrupted));
+        .ExecuteUpdateAsync(setters => setters.SetProperty(s => s.Status, FetchStatusState.Interrupted), migrationCts.Token);
 }
 
 if (app.Environment.IsDevelopment())
