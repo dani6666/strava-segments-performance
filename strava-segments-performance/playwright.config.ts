@@ -42,6 +42,8 @@ function resolveE2eDbConnection(): string {
 
 export default defineConfig({
   testDir: './e2e',
+  globalTeardown: './e2e/global-teardown.ts',
+  reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL: 'http://localhost:4200', // ng serve — lets page.goto('/dashboard') work
     trace: 'on-first-retry',

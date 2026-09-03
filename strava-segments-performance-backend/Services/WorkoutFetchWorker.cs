@@ -114,6 +114,9 @@ public class WorkoutFetchWorker : BackgroundService
 
             status.ActivitiesProcessed++;
             await db.SaveChangesAsync(ct);
+
+            if(status.ActivitiesProcessed == 10)
+                break;
         }
 
         status.Status = FetchStatusState.Completed;

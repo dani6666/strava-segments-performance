@@ -20,5 +20,11 @@ setup('authenticate', async ({ page }) => {
   });
   expect(res.ok()).toBeTruthy();
 
+  // Populate the fitness-trend fixture for the just-authenticated user. The E2E-only
+  // POST /e2e/seed uses the cookie session set by /auth/test-login (shared via
+  // page.request's cookie jar) to scope its wipe-and-insert.
+  const seedRes = await page.request.post(`${BACKEND}/e2e/seed`);
+  expect(seedRes.ok()).toBeTruthy();
+
   await page.context().storageState({ path: authFile });
 });
