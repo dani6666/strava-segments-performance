@@ -72,7 +72,7 @@ public class StravaApiClient
             {
                 var wait = response.Headers.RetryAfter?.Delta ?? DefaultRateLimitWait;
                 response.Dispose();
-                if (_timeProvider.GetUtcNow() + wait < retryDeadline)
+                if (_timeProvider.GetUtcNow() + wait > retryDeadline)
                     throw new TimeoutException(
                         $"Strava rate-limit retries for '{request.RequestUri}' exceeded the {SingleCallRetryTimeout.TotalHours}h limit.");
                 await Task.Delay(wait, _timeProvider, ct);
