@@ -8,7 +8,7 @@
 # stale revision.
 #
 # Usage: oauth-redirect-smoke.sh <base-url> <expected-sha>
-# POSIX sh + curl. No secrets. Side-effect-free: the 302 is generated before Strava
+# POSIX sh + curl + awk. No secrets. Side-effect-free: the 302 is generated before Strava
 # is contacted, and the throwaway correlation cookie is discarded.
 set -eu
 
@@ -67,8 +67,12 @@ if [ -z "$ENCODED" ]; then
   exit 1
 fi
 
-# POSIX URL-decode: '+' -> space, %XX -> \xXX, then let printf %b expand the escapes.
-DECODED=$(printf '%b' "$(printf '%s' "$ENCODED" | sed 's/+/ /g; s/%/\\x/g')")
+# URL-decode the redirect_uri with plain sed. A redirect_uri only ever carries a
+# fixed, small set of encoded chars (: / ? = &, plus + -> space), so literal swaps
+# cover it — and unlike `printf %b`, sed behaves the same under dash (the /bin/sh
+# this runs on in CI) and bash. Hex digits are matched case-insensitively.
+DECODED=$(printf '%s' "$ENCODED" | sed \
+  's/+/ /g; s/%3[Aa]/:/g; s/%2[Ff]/\//g; s/%3[Ff]/?/g; s/%3[Dd]/=/g; s/%26/\&/g')
 
 # --- 4. Assert scheme https + expected public host + /auth/callback path -----
 EXPECTED_PREFIX="$BASE/auth/callback"
