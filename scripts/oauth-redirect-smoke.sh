@@ -8,7 +8,7 @@
 # stale revision.
 #
 # Usage: oauth-redirect-smoke.sh <base-url> <expected-sha>
-# POSIX sh + curl + awk. No secrets. Side-effect-free: the 302 is generated before Strava
+# POSIX sh + curl + sed. No secrets. Side-effect-free: the 302 is generated before Strava
 # is contacted, and the throwaway correlation cookie is discarded.
 set -eu
 

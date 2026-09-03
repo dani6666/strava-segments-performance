@@ -6,12 +6,14 @@ on:
     paths:
       - "strava-segments-performance-backend/**"
       - "strava-segments-performance-backend-tests/**"
+      - "scripts/oauth-redirect-smoke.sh"
       - ".github/workflows/backend-ci.yml"
   pull_request:
     branches: [master]
     paths:
       - "strava-segments-performance-backend/**"
       - "strava-segments-performance-backend-tests/**"
+      - "scripts/oauth-redirect-smoke.sh"
       - ".github/workflows/backend-ci.yml"
 
 env:
