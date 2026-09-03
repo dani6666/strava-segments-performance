@@ -261,6 +261,11 @@ if (app.Environment.IsEnvironment("E2E"))
         db.Activities.AddRange(activity1, activity2);
         await db.SaveChangesAsync();
 
+        // Two efforts per (activity, segment). One-per-segment would leave a single-activity
+        // narrowing (e.g. `to = 2026-08-15`) with only one effort per segment, which fails
+        // FitnessScoring's `survivors.Count >= 2` gate and produces an empty trend. Doubling
+        // each keeps each segment's history >= 2 within a single activity, so narrowing still
+        // clears the gate and the tie case at FitnessScoring:53 emits one 50.0 trend point.
         long nextEffortId = 9100001;
         var segmentIds = new long[] { 10, 11, 12 };
         var efforts = new List<SegmentEffort>();
@@ -278,11 +283,31 @@ if (app.Environment.IsEnvironment("E2E"))
             });
             efforts.Add(new SegmentEffort
             {
+                ActivityId = activity1.Id,
+                StravaSegmentEffortId = nextEffortId++,
+                StravaSegmentId = segmentId,
+                SegmentName = $"E2E Segment {segmentId}",
+                ElapsedTimeSeconds = 210,
+                AverageHeartRate = 160,
+                StartDateUtc = activity1.StartDateUtc
+            });
+            efforts.Add(new SegmentEffort
+            {
                 ActivityId = activity2.Id,
                 StravaSegmentEffortId = nextEffortId++,
                 StravaSegmentId = segmentId,
                 SegmentName = $"E2E Segment {segmentId}",
                 ElapsedTimeSeconds = 100,
+                AverageHeartRate = 140,
+                StartDateUtc = activity2.StartDateUtc
+            });
+            efforts.Add(new SegmentEffort
+            {
+                ActivityId = activity2.Id,
+                StravaSegmentEffortId = nextEffortId++,
+                StravaSegmentId = segmentId,
+                SegmentName = $"E2E Segment {segmentId}",
+                ElapsedTimeSeconds = 110,
                 AverageHeartRate = 140,
                 StartDateUtc = activity2.StartDateUtc
             });
@@ -302,7 +327,7 @@ if (app.Environment.IsEnvironment("E2E"))
         await db.SaveChangesAsync();
         await tx.CommitAsync();
 
-        return Results.Ok(new { userId = user.Id, activities = 2, efforts = 6 });
+        return Results.Ok(new { userId = user.Id, activities = 2, efforts = 12 });
     }).RequireAuthorization();
 
     app.MapPost("/e2e/reset", async (HttpContext ctx, AppDbContext db) =>

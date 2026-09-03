@@ -4,6 +4,7 @@ title: Testing vertical slice happy path
 status: implementing
 created: 2026-09-03
 updated: 2026-09-03
+
 archived_at: null
 ---
 

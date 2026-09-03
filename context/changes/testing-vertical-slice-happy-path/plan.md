@@ -73,8 +73,8 @@ Add two E2E-only backend endpoints that let the Playwright setup deterministical
   1. Delete all `SegmentEfforts` whose parent `Activity.UserId == user.Id` (join via `Activities`).
   2. Delete all `Activities` where `UserId == user.Id`.
   3. Delete the `WorkoutFetchStatuses` row for `user.Id` if any.
-  4. Insert the fixture: 2 `Activities` (`StravaActivityId=9000001` at `StartDateUtc=2026-08-15T10:00:00Z`, `StravaActivityId=9000002` at `StartDateUtc=2026-08-22T10:00:00Z`), 6 `SegmentEfforts` (segments `10`/`11`/`12` × 2 activities; each pair uses `ElapsedTimeSeconds=200, AverageHeartRate=160` on the earlier activity and `ElapsedTimeSeconds=100, AverageHeartRate=140` on the later; `StravaSegmentEffortId` pinned in the range `9100001..9100006`), and one `WorkoutFetchStatuses` row for `user.Id` with `status='completed'` and `FetchedFrom=2026-08-01T00:00:00Z`, `FetchedTo=2026-08-31T23:59:59Z` (values match whatever the existing entity requires — read `Models/WorkoutFetchStatus.cs` before writing).
-  5. `SaveChangesAsync`; return `200 OK` with `{ userId, activities: 2, efforts: 6 }`.
+  4. Insert the fixture: 2 `Activities` (`StravaActivityId=9000001` at `StartDateUtc=2026-08-15T10:00:00Z`, `StravaActivityId=9000002` at `StartDateUtc=2026-08-22T10:00:00Z`), 12 `SegmentEfforts` (segments `10`/`11`/`12` × 2 activities × 2 efforts per (activity, segment) pair; Activity 1 pair uses `ElapsedTimeSeconds=200/210, AverageHeartRate=160`; Activity 2 pair uses `ElapsedTimeSeconds=100/110, AverageHeartRate=140`; `StravaSegmentEffortId` pinned in the range `9100001..9100012`), and one `WorkoutFetchStatuses` row for `user.Id` with `status='completed'` (values match whatever the existing entity requires — read `Models/WorkoutFetchStatus.cs` before writing). **Why two efforts per (activity, segment)**: one-per-segment would leave a single-activity narrowing with only 1 effort per segment, failing FitnessScoring's `survivors.Count >= 2` gate and producing an empty trend. Doubling keeps each segment's history ≥ 2 within a single activity, so narrowing still clears the gate and the tie case at [FitnessScoring.cs:53](strava-segments-performance-backend/Services/FitnessScoring.cs:53) emits one 50.0 trend point.
+  5. `SaveChangesAsync`; return `200 OK` with `{ userId, activities: 2, efforts: 12 }`.
 - `POST /e2e/reset` (no body): same auth gate, same delete steps 1-3, no insert. Returns `200 OK` with `{ userId, deleted: true }`.
 - Both wrapped in `if (app.Environment.IsEnvironment("E2E"))`. Not mapped under Development or Production.
 
@@ -255,31 +255,31 @@ Extend the existing `auth.setup.ts` to seed after login, add a `globalTeardown` 
 
 #### Automated
 
-- [x] 1.1 Backend still builds: `dotnet build strava-segments-performance-backend/strava-segments-performance-backend.csproj`
-- [x] 1.2 Existing tests still pass: `dotnet test strava-segments-performance-backend-tests/strava-segments-performance-backend-tests.csproj`
-- [x] 1.3 Lint passes: `dotnet format --verify-no-changes strava-segments-performance-backend/strava-segments-performance-backend.csproj`
+- [x] 1.1 Backend still builds: `dotnet build strava-segments-performance-backend/strava-segments-performance-backend.csproj` — 99a0cd6
+- [x] 1.2 Existing tests still pass: `dotnet test strava-segments-performance-backend-tests/strava-segments-performance-backend-tests.csproj` — 99a0cd6
+- [x] 1.3 Lint passes: `dotnet format --verify-no-changes strava-segments-performance-backend/strava-segments-performance-backend.csproj` — 99a0cd6
 
 #### Manual
 
-- [x] 1.4 With backend booted under `ASPNETCORE_ENVIRONMENT=E2E` and a valid session cookie (obtained via `/auth/test-login`), `curl -X POST -b cookies.txt http://localhost:5000/e2e/seed` returns `200` and inserts 2+6+1 rows in the `strava_segments_e2e` DB.
-- [x] 1.5 A second call to `/e2e/seed` returns `200` and the row counts remain 2+6+1 (wipe-and-insert is idempotent).
-- [x] 1.6 `POST /e2e/reset` returns `200` and leaves `Activities`/`SegmentEfforts`/`WorkoutFetchStatuses` empty for that user.
-- [x] 1.7 Under Development env, `GET/POST /e2e/seed` returns `404` (endpoint not mapped).
+- [x] 1.4 With backend booted under `ASPNETCORE_ENVIRONMENT=E2E` and a valid session cookie (obtained via `/auth/test-login`), `curl -X POST -b cookies.txt http://localhost:5000/e2e/seed` returns `200` and inserts 2+6+1 rows in the `strava_segments_e2e` DB. — 99a0cd6
+- [x] 1.5 A second call to `/e2e/seed` returns `200` and the row counts remain 2+6+1 (wipe-and-insert is idempotent). — 99a0cd6
+- [x] 1.6 `POST /e2e/reset` returns `200` and leaves `Activities`/`SegmentEfforts`/`WorkoutFetchStatuses` empty for that user. — 99a0cd6
+- [x] 1.7 Under Development env, `GET/POST /e2e/seed` returns `404` (endpoint not mapped). — 99a0cd6
 
 ### Phase 2: Frontend picker → analysis wiring
 
 #### Automated
 
-- [ ] 2.1 Frontend builds: `npm run build` in `strava-segments-performance/`
-- [ ] 2.2 Type check clean: implicit in the build
-- [ ] 2.3 Unit tests pass: `npm test` in `strava-segments-performance/`
-- [ ] 2.4 Lint passes: `npm run lint` if such a script exists; otherwise `prettier --check` per repo convention
+- [x] 2.1 Frontend builds: `npm run build` in `strava-segments-performance/`
+- [x] 2.2 Type check clean: implicit in the build
+- [x] 2.3 Unit tests pass: `npm test` in `strava-segments-performance/`
+- [x] 2.4 Lint passes: `npm run lint` if such a script exists; otherwise `prettier --check` per repo convention
 
 #### Manual
 
-- [ ] 2.5 With backend under `E2E` env and seed populated, on `/dashboard` the chart mounts with 2 points, then narrowing the `To` field to `2026-08-15` causes the chart to re-render with 1 point (network tab shows a `GET /api/analysis/fitness-trend?from=...&to=...` call).
-- [ ] 2.6 Clearing both picker fields returns the chart to 2 points.
-- [ ] 2.7 No console errors on debounced re-trigger.
+- [x] 2.5 With backend under `E2E` env and seed populated, on `/dashboard` the chart mounts with 2 points, then narrowing the `To` field to `2026-08-15` causes the chart to re-render with 1 point (network tab shows a `GET /api/analysis/fitness-trend?from=...&to=...` call).
+- [x] 2.6 Clearing both picker fields returns the chart to 2 points.
+- [x] 2.7 No console errors on debounced re-trigger.
 
 ### Phase 3: Playwright setup, teardown, and vertical-slice spec
 

@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -17,15 +17,21 @@ export class AnalysisService {
 
   constructor(private http: HttpClient) {}
 
-  load() {
+  load(from?: string, to?: string) {
     this.loadState.set('loading');
+    let params = new HttpParams();
+    if (from) params = params.set('from', from);
+    if (to) params = params.set('to', to);
     return this.http
-      .get<FitnessTrendPoint[]>(`${environment.apiBaseUrl}/api/analysis/fitness-trend`, { withCredentials: true })
+      .get<FitnessTrendPoint[]>(`${environment.apiBaseUrl}/api/analysis/fitness-trend`, {
+        params,
+        withCredentials: true,
+      })
       .pipe(
-        tap(series => {
+        tap((series) => {
           this.series.set(series);
           this.loadState.set('loaded');
-        })
+        }),
       )
       .subscribe({ error: () => this.setFailed() });
   }
