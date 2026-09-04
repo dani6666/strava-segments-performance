@@ -6,3 +6,4 @@
 .env*
 playwright
 .playwright-cli
+cookies.txt
