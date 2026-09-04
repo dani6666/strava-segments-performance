@@ -3,7 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Subscription, interval, switchMap, takeWhile, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-export type FetchStatusValue = 'idle' | 'pending' | 'running' | 'completed' | 'failed' | 'interrupted';
+export type FetchStatusValue =
+  | 'idle'
+  | 'pending'
+  | 'running'
+  | 'completed'
+  | 'failed'
+  | 'interrupted';
 export type FetchStage = 'listing' | 'fetching_details' | null;
 
 export interface WorkoutFetchStatus {
@@ -19,7 +25,7 @@ const IDLE_STATUS: WorkoutFetchStatus = {
   stage: null,
   activitiesProcessed: 0,
   totalToProcess: null,
-  errorMessage: null
+  errorMessage: null,
 };
 
 export interface FetchWindowBody {
@@ -51,13 +57,17 @@ export class WorkoutFetchService {
 
   trigger() {
     return this.http
-      .post<WorkoutFetchStatus>(`${environment.apiBaseUrl}/api/workouts/fetch`, this.buildFetchWindowBody(), {
-        withCredentials: true
-      })
-      .pipe(tap(status => this.status.set(status)))
+      .post<WorkoutFetchStatus>(
+        `${environment.apiBaseUrl}/api/workouts/fetch`,
+        this.buildFetchWindowBody(),
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(tap((status) => this.status.set(status)))
       .subscribe({
         next: () => this.startPolling(),
-        error: err => this.setFailed(err)
+        error: (err) => this.setFailed(err),
       });
   }
 
@@ -72,16 +82,18 @@ export class WorkoutFetchService {
 
   checkStatus() {
     return this.http
-      .get<WorkoutFetchStatus>(`${environment.apiBaseUrl}/api/workouts/fetch-status`, { withCredentials: true })
+      .get<WorkoutFetchStatus>(`${environment.apiBaseUrl}/api/workouts/fetch-status`, {
+        withCredentials: true,
+      })
       .pipe(
-        tap(status => {
+        tap((status) => {
           this.status.set(status);
           if (status.status === 'pending' || status.status === 'running') {
             this.startPolling();
           }
-        })
+        }),
       )
-      .subscribe({ error: err => this.setFailed(err) });
+      .subscribe({ error: (err) => this.setFailed(err) });
   }
 
   private startPolling() {
@@ -94,20 +106,31 @@ export class WorkoutFetchService {
       .pipe(
         switchMap(() =>
           this.http.get<WorkoutFetchStatus>(`${environment.apiBaseUrl}/api/workouts/fetch-status`, {
-            withCredentials: true
-          })
+            withCredentials: true,
+          }),
         ),
-        tap(status => this.status.set(status)),
-        takeWhile(status => status.status === 'pending' || status.status === 'running', true)
+        tap((status) => this.status.set(status)),
+        takeWhile((status) => status.status === 'pending' || status.status === 'running', true),
       )
-      .subscribe({ error: err => this.setFailed(err) });
+      .subscribe({ error: (err) => this.setFailed(err) });
+  }
+
+  deleteAll() {
+    return this.http
+      .delete(`${environment.apiBaseUrl}/api/workouts`, { withCredentials: true })
+      .pipe(
+        tap(() => {
+          this.pollingSub?.unsubscribe();
+          this.status.set(IDLE_STATUS);
+        }),
+      );
   }
 
   private setFailed(err: unknown) {
-    this.status.update(current => ({
+    this.status.update((current) => ({
       ...current,
       status: 'failed',
-      errorMessage: err instanceof Error ? err.message : 'Fetch request failed.'
+      errorMessage: err instanceof Error ? err.message : 'Fetch request failed.',
     }));
   }
 }

@@ -49,6 +49,7 @@
         <div class="fetch-complete">
           <p>{{ fetchService.status().activitiesProcessed }} cycling activities cached</p>
           <button [disabled]="invalidRange()" (click)="trigger()">Check for new rides</button>
+          <button class="delete-all" (click)="deleteAll()">Delete all my data</button>
         </div>
 
         @switch (analysisService.loadState()) {

@@ -96,4 +96,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const value = (event.target as HTMLInputElement).value;
     this.fetchService.toDate.set(value || null);
   }
+
+  deleteAll() {
+    if (!confirm('Delete all your cached activities and efforts? This cannot be undone.')) return;
+    if (this.analysisRetriggerTimeoutId !== null) {
+      clearTimeout(this.analysisRetriggerTimeoutId);
+      this.analysisRetriggerTimeoutId = null;
+    }
+    this.fetchService.deleteAll().subscribe(() => this.analysisService.reset());
+  }
 }
