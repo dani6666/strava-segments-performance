@@ -1,7 +1,7 @@
 ---
 change_id: delete-all-activities
 title: Add button to delete all activities and reset page to initial state
-status: implementing
+status: implemented
 created: 2026-09-04
 updated: 2026-09-04
 archived_at: null

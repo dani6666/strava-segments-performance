@@ -177,12 +177,12 @@ None — no schema or model changes.
 
 #### Automated
 
-- [x] 2.1 Frontend builds: `npm run build`
+- [x] 2.1 Frontend builds: `npm run build` — f20ba96
 
 #### Manual
 
-- [x] 2.2 Delete button appears in the completed panel after a fetch
-- [x] 2.3 Native confirm shows; Cancel is a no-op
-- [x] 2.4 Confirming clears data, hides the chart, and returns to the fetch-only idle view
-- [x] 2.5 Reload preserves the idle state (data really gone)
-- [x] 2.6 Button is hidden during idle/pending/running
+- [x] 2.2 Delete button appears in the completed panel after a fetch — f20ba96
+- [x] 2.3 Native confirm shows; Cancel is a no-op — f20ba96
+- [x] 2.4 Confirming clears data, hides the chart, and returns to the fetch-only idle view — f20ba96
+- [x] 2.5 Reload preserves the idle state (data really gone) — f20ba96
+- [x] 2.6 Button is hidden during idle/pending/running — f20ba96
