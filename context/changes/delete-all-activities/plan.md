@@ -165,13 +165,13 @@ None — no schema or model changes.
 
 #### Automated
 
-- [x] 1.1 Backend builds: `dotnet build`
+- [x] 1.1 Backend builds: `dotnet build` — 9586882
 
 #### Manual
 
-- [ ] 1.2 Authenticated DELETE returns 204 and removes the user's activities, efforts, and fetch-status rows
-- [ ] 1.3 Second DELETE on empty data still returns 204 (idempotent)
-- [ ] 1.4 Another user's rows are untouched
+- [x] 1.2 Authenticated DELETE returns 204 and removes the user's activities, efforts, and fetch-status rows — 9586882
+- [x] 1.3 Second DELETE on empty data still returns 204 (idempotent) — 9586882
+- [x] 1.4 Another user's rows are untouched — 9586882
 
 ### Phase 2: Frontend delete action + state reset
 
@@ -181,8 +181,8 @@ None — no schema or model changes.
 
 #### Manual
 
-- [ ] 2.2 Delete button appears in the completed panel after a fetch
-- [ ] 2.3 Native confirm shows; Cancel is a no-op
-- [ ] 2.4 Confirming clears data, hides the chart, and returns to the fetch-only idle view
-- [ ] 2.5 Reload preserves the idle state (data really gone)
-- [ ] 2.6 Button is hidden during idle/pending/running
+- [x] 2.2 Delete button appears in the completed panel after a fetch
+- [x] 2.3 Native confirm shows; Cancel is a no-op
+- [x] 2.4 Confirming clears data, hides the chart, and returns to the fetch-only idle view
+- [x] 2.5 Reload preserves the idle state (data really gone)
+- [x] 2.6 Button is hidden during idle/pending/running

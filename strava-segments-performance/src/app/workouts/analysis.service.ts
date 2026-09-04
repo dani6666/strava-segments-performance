@@ -56,6 +56,11 @@ export class AnalysisService {
     this.requests$.next({ from, to });
   }
 
+  reset() {
+    this.series.set(null);
+    this.loadState.set('idle');
+  }
+
   private setFailed() {
     this.loadState.set('error');
   }

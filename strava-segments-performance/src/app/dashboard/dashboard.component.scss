@@ -81,6 +81,15 @@
       }
     }
 
+    .delete-all {
+      background: #c0392b;
+      margin-left: 0.75rem;
+
+      &:hover {
+        background: #962d22;
+      }
+    }
+
     .fetch-progress {
       display: flex;
       flex-direction: column;
